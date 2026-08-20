@@ -1,13 +1,39 @@
 name: GeoInsight
 description: >-
-  GeoInsight is a German geospatial-AI company offering a Data-as-a-Service platform built on a Discrete Global Grid
-  System (DGGS). It converts Earth-observation data into AI-ready hierarchical hexagonal 'Spatial Tokens' exposed via a
-  standards-compliant OGC API - DGGS REST endpoint, starting with Sentinel-2 from the Copernicus archive.
+  GeoInsight GmbH is a German geospatial-AI company running a Data-as-a-Service platform built on a Discrete Global
+  Grid System (DGGS). It converts Earth-observation and vector data into AI-ready hierarchical hexagonal "Spatial
+  Tokens" so that models can reason about geography the way language models reason about text. The platform is
+  exposed through a standards-compliant OGC API - DGGS endpoint that answers zone-based queries across multiple
+  DGGRS (H3, ISEA3H, IGEO7, IVEA3H), serving Sentinel-2 and Landsat imagery from the Copernicus and USGS archives,
+  RADARSAT Constellation backscatter, Overture administrative boundaries, AIS vessel positions, building footprints
+  and elevation models. Queries return GeoJSON, DGGS-JSON, GeoParquet or HTML, with CQL2 filtering, COG raster
+  statistics and STAC search strategies. Target markets are OSINT and maritime intelligence, climate and
+  environment, agriculture and food security, infrastructure and urban planning, disaster response, and finance
+  and risk. The company is an NVIDIA Inception member and participates in the OGC AI-DGGS pilot programme.
+image: https://geoinsight.ai/og-image.png
 url: https://raw.githubusercontent.com/api-evangelist/geoinsight/refs/heads/main/apis.yml
 created: '2026-08-20'
 modified: '2026-08-20'
 specificationVersion: '0.21'
 tags:
+  - Geospatial
+  - DGGS
+  - Discrete Global Grid System
+  - Earth Observation
+  - Remote Sensing
+  - Spatial Data
+  - GIS
+  - Artificial Intelligence
+  - Machine-Learning
+  - Analysis-ready data
+  - Spatial Tokens
+  - Sentinel-2
+  - Copernicus
+  - OGC
+  - STAC
+  - GeoParquet
+  - H3
+tags_raw:
   - Geospatial
   - DGGS
   - Discrete Global Grid System
@@ -21,15 +47,43 @@ tags:
   - Spatial Tokens
   - Sentinel-2
   - Copernicus
+  - OGC
+  - STAC
+  - GeoParquet
+  - H3
 apis:
   - name: OGC API - DGGS
     description: >-
-      Standards-compliant OGC API - Discrete Global Grid Systems endpoint exposing the Spatial Token store for
-      zone-based queries. Authenticated with a GeoInsight Personal Token (GPT) and API Private Key (APK) from the
-      dashboard, and supported by an official Python SDK (pip install geoinsight).
-    humanURL: https://dggs.geoinsight.ai/api?f=html
-    baseURL: https://dggs.geoinsight.ai
+      Standards-compliant OGC API - Discrete Global Grid Systems endpoint exposing the GeoInsight Spatial Token
+      store for zone-based queries. Fourteen read operations across four resource families: a landing page and
+      service description, a collection catalogue (22 published collections), the DGGRS registry (H3, ISEA3H via
+      both DGGRID and DGGAL, IGEO7, IVEA3H), zone discovery and zone data retrieval with relative-depth
+      aggregation, and an OGC API - Features style /items surface backed by a GeoParquet lake with CQL2 filtering.
+      Zone data requests accept COG raster statistics parameters (band, no-data, sampling factor, all-touched) and
+      STAC search strategies (single, latest, mosaic) with cloud-cover and intersection thresholds. Reads answer
+      anonymously at the time of probing; the official Python package documents a GeoInsight Personal Token (GPT)
+      plus API Private Key (APK) issued from the dashboard.
+    humanURL: https://api.geoinsight.ai/api?f=html
+    baseURL: https://api.geoinsight.ai
     tags:
+      - Geospatial
+      - DGGS
+      - Discrete Global Grid System
+      - Earth Observation
+      - Remote Sensing
+      - Spatial Data
+      - GIS
+      - Artificial Intelligence
+      - Machine-Learning
+      - Analysis-ready data
+      - Spatial Tokens
+      - Sentinel-2
+      - Copernicus
+      - OGC
+      - STAC
+      - GeoParquet
+      - H3
+    tags_raw:
       - Geospatial
       - DGGS
       - Discrete Global Grid System
@@ -43,18 +97,129 @@ apis:
       - Spatial Tokens
       - Sentinel-2
       - Copernicus
+      - OGC
+      - STAC
+      - GeoParquet
+      - H3
     properties:
+      - type: OpenAPI
+        url: openapi/geoinsight-ogc-api-dggs-openapi.yml
       - type: Documentation
-        url: https://dggs.geoinsight.ai/api?f=html
+        url: https://api.geoinsight.ai/api?f=html
+      - type: APIReference
+        url: https://api.geoinsight.ai/api?f=html
+      - type: Authentication
+        url: authentication/geoinsight-authentication.yml
+      - type: Conventions
+        url: conventions/geoinsight-conventions.yml
+      - type: DataModel
+        url: data-model/geoinsight-data-model.yml
+      - type: ErrorCatalog
+        url: errors/geoinsight-problem-types.yml
+      - type: Overlay
+        url: overlays/geoinsight-ogc-api-dggs-overlay.yaml
+      - type: ToolCrosswalk
+        url: mcp/geoinsight-tool-crosswalk.yml
+common:
+  - type: AgenticAccess
+    url: agentic-access/geoinsight-agentic-access.yml
+  - type: Website
+    url: https://geoinsight.ai/
+  - type: DeveloperPortal
+    url: https://dggs.io/
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Sandbox
+    url: https://dggs.io/api-tester
+  - type: TermsOfService
+    url: https://geoinsight.ai/terms
+  - type: PrivacyPolicy
+    url: https://geoinsight.ai/privacy
+  - type: Support
+    url: mailto:info@geoinsight.ai
+  - type: OpenAPI
+    url: openapi/geoinsight-ogc-api-dggs-openapi.yml
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/geoinsight-lifecycle.yml
+  - type: Conformance
+    url: conformance/geoinsight-conformance.yml
+  - type: Overlay
+    url: overlays/geoinsight-ogc-api-dggs-overlay.yaml
+  - type: Packages
+    url: packages/geoinsight-packages.yml
+  - type: SDKs
+    url: packages/geoinsight-packages.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/geoinsight-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Plans
+    url: plans/geoinsight-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/geoinsight-rate-limits.yml
+  - type: DomainSecurity
+    url: security/geoinsight-domain-security.yml
 maintainers:
   - FN: GeoInsight GmbH
+    email: info@geoinsight.ai
     url: https://geoinsight.ai/
   - FN: Dr. Michael Jendryke
-    url: https://geoinsight.ai/
+    email: michael.jendryke@geoinsight.ai
+    url: https://www.linkedin.com/in/michaeljendryke/
   - FN: Dr. Gino Caspari
-    url: https://geoinsight.ai/
+    email: gino.caspari@geoinsight.ai
+    url: https://www.linkedin.com/in/ginocaspari/
+  - FN: João Manuel
+    email: joao.manuel@geoinsight.ai
+    url: https://www.linkedin.com/in/joaocsmanuel/
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 72
   at: '2026-08-20T10:24:21.039Z'
+x-enrichment:
+  date: '2026-08-20'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1
+x-contract-discovery:
+  date: '2026-08-20'
+  finding: >-
+    The baseURL this repo was created with, https://dggs.geoinsight.ai, is dead - it resolves, presents a
+    self-signed "Kubernetes Ingress Controller Fake Certificate", and returns an nginx 404 on every path
+    including /api?f=json, /api?f=html, /collections and /conformance. The live OGC API - DGGS endpoint is
+    https://api.geoinsight.ai, found by reading the JavaScript bundle of GeoInsight's own dggs.io tooling
+    site. It serves a real OpenAPI 3.1.0 document with 14 operations at /api?f=json under the OGC
+    rel=service-desc relation. Ownership is proven from the service's own root document, which declares
+    title "OGC DGGS API" and attribution "GeoInsight" - not from the fetch host - and the host carries a
+    valid Sectigo wildcard certificate for *.geoinsight.ai.
+  evidence:
+    - {url: 'https://dggs.geoinsight.ai/api?f=json', status: 404, note: 'apis.yml original baseURL - dead, fake ingress certificate'}
+    - {url: 'https://dggs.geoinsight.ai/', status: 404}
+    - {url: 'https://api.geoinsight.ai/', status: 200, note: 'Root document: title "OGC DGGS API", attribution GeoInsight'}
+    - {url: 'https://api.geoinsight.ai/api?f=json', status: 200, note: 'OpenAPI 3.1.0, 14 operations, 28 schemas - saved'}
+    - {url: 'https://api.geoinsight.ai/collections?f=json', status: 200, note: '22 live collections'}
+    - {url: 'https://api.geoinsight.ai/dggs?f=json', status: 200, note: '5 DGGRS: H3, ISEA3HDGGRID, ISEA3HDGGAL, IGEO7, IVEA3H'}
+    - {url: 'https://api.geoinsight.ai/conformance', status: 500, note: 'OGC-required conformance declaration fails'}
+    - {url: 'https://api.geoinsight.ai/graphql', status: 404}
+    - {url: 'https://api.geoinsight.ai/mcp', status: 404, note: 'POST tools/list'}
+    - {url: 'https://mcp.geoinsight.ai/mcp', status: 404, note: 'POST tools/list'}
+    - {url: 'https://api.geoinsight.ai/.well-known/agent-card.json', status: 404}
+    - {url: 'https://geoinsight.ai/.well-known/agent-card.json', status: 404}
+    - {url: 'https://dggs.io/.well-known/agent-card.json', status: 404}
+    - {url: 'https://docs.geoinsight.ai/', status: 404, note: 'Docs host named in the API root attribution - dead, fake ingress certificate'}
+    - {url: 'https://dashboard.geoinsight.ai/', status: 404, note: 'Credential-issuance host named in the official PyPI README - dead'}
+    - {url: 'https://api.github.com/orgs/geoinsight', status: 404, note: 'No public GitHub organization'}
+    - {url: 'https://pypi.org/pypi/geoinsight/json', status: 200, note: 'First-party Python SDK, v0.8.1, last released 2024-04-16'}
