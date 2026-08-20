@@ -1,0 +1,60 @@
+name: GeoInsight
+description: >-
+  GeoInsight is a German geospatial-AI company offering a Data-as-a-Service platform built on a Discrete Global Grid
+  System (DGGS). It converts Earth-observation data into AI-ready hierarchical hexagonal 'Spatial Tokens' exposed via a
+  standards-compliant OGC API - DGGS REST endpoint, starting with Sentinel-2 from the Copernicus archive.
+url: https://raw.githubusercontent.com/api-evangelist/geoinsight/refs/heads/main/apis.yml
+created: '2026-08-20'
+modified: '2026-08-20'
+specificationVersion: '0.21'
+tags:
+  - Geospatial
+  - DGGS
+  - Discrete Global Grid System
+  - Earth Observation
+  - Remote Sensing
+  - Spatial Data
+  - GIS
+  - AI
+  - Machine Learning
+  - Analysis-ready data
+  - Spatial Tokens
+  - Sentinel-2
+  - Copernicus
+apis:
+  - name: OGC API - DGGS
+    description: >-
+      Standards-compliant OGC API - Discrete Global Grid Systems endpoint exposing the Spatial Token store for
+      zone-based queries. Authenticated with a GeoInsight Personal Token (GPT) and API Private Key (APK) from the
+      dashboard, and supported by an official Python SDK (pip install geoinsight).
+    humanURL: https://dggs.geoinsight.ai/api?f=html
+    baseURL: https://dggs.geoinsight.ai
+    tags:
+      - Geospatial
+      - DGGS
+      - Discrete Global Grid System
+      - Earth Observation
+      - Remote Sensing
+      - Spatial Data
+      - GIS
+      - AI
+      - Machine Learning
+      - Analysis-ready data
+      - Spatial Tokens
+      - Sentinel-2
+      - Copernicus
+    properties:
+      - type: Documentation
+        url: https://dggs.geoinsight.ai/api?f=html
+maintainers:
+  - FN: GeoInsight GmbH
+    url: https://geoinsight.ai/
+  - FN: Dr. Michael Jendryke
+    url: https://geoinsight.ai/
+  - FN: Dr. Gino Caspari
+    url: https://geoinsight.ai/
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 72
+  at: '2026-08-20T10:24:21.039Z'
