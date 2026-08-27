@@ -52,74 +52,222 @@ tags_raw:
   - GeoParquet
   - H3
 apis:
-  - name: OGC API - DGGS
-    description: >-
-      Standards-compliant OGC API - Discrete Global Grid Systems endpoint exposing the GeoInsight Spatial Token
-      store for zone-based queries. Fourteen read operations across four resource families: a landing page and
-      service description, a collection catalogue (22 published collections), the DGGRS registry (H3, ISEA3H via
-      both DGGRID and DGGAL, IGEO7, IVEA3H), zone discovery and zone data retrieval with relative-depth
-      aggregation, and an OGC API - Features style /items surface backed by a GeoParquet lake with CQL2 filtering.
-      Zone data requests accept COG raster statistics parameters (band, no-data, sampling factor, all-touched) and
-      STAC search strategies (single, latest, mosaic) with cloud-cover and intersection thresholds. Reads answer
-      anonymously at the time of probing; the official Python package documents a GeoInsight Personal Token (GPT)
-      plus API Private Key (APK) issued from the dashboard.
-    humanURL: https://api.geoinsight.ai/api?f=html
-    baseURL: https://api.geoinsight.ai
-    tags:
-      - Geospatial
-      - DGGS
-      - Discrete Global Grid System
-      - Earth Observation
-      - Remote Sensing
-      - Spatial Data
-      - GIS
-      - Artificial Intelligence
-      - Machine-Learning
-      - Analysis-ready data
-      - Spatial Tokens
-      - Sentinel-2
-      - Copernicus
-      - OGC
-      - STAC
-      - GeoParquet
-      - H3
-    tags_raw:
-      - Geospatial
-      - DGGS
-      - Discrete Global Grid System
-      - Earth Observation
-      - Remote Sensing
-      - Spatial Data
-      - GIS
-      - AI
-      - Machine Learning
-      - Analysis-ready data
-      - Spatial Tokens
-      - Sentinel-2
-      - Copernicus
-      - OGC
-      - STAC
-      - GeoParquet
-      - H3
-    properties:
-      - type: OpenAPI
-        url: openapi/geoinsight-ogc-api-dggs-openapi.yml
-      - type: Documentation
-        url: https://api.geoinsight.ai/api?f=html
-      - type: APIReference
-        url: https://api.geoinsight.ai/api?f=html
-      - type: Authentication
-        url: authentication/geoinsight-authentication.yml
-      - type: Conventions
-        url: conventions/geoinsight-conventions.yml
-      - type: DataModel
-        url: data-model/geoinsight-data-model.yml
-      - type: ErrorCatalog
-        url: errors/geoinsight-problem-types.yml
-      - type: Overlay
-        url: overlays/geoinsight-ogc-api-dggs-overlay.yaml
-      - type: ToolCrosswalk
-        url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-collection-id-api
+  name: GeoInsight Collection ID API
+  description: The Collection ID API from GeoInsight — 1 operation(s) for collection id.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Collection ID
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-collection-id-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-collections-api
+  name: GeoInsight Collections API
+  description: The Collections API from GeoInsight — 1 operation(s) for collections.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-collections-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-data-api
+  name: GeoInsight Data API
+  description: The Data API from GeoInsight — 1 operation(s) for data.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Data
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-data-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-dggrs-id-api
+  name: GeoInsight DGGRS ID API
+  description: The DGGRS ID API from GeoInsight — 2 operation(s) for dggrs id.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - DGGRS ID
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-dggrs-id-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-dggs-api
+  name: GeoInsight DGGS API
+  description: The DGGS API from GeoInsight — 2 operation(s) for dggs.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - DGGS
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-dggs-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-items-api
+  name: GeoInsight Items API
+  description: The Items API from GeoInsight — 2 operation(s) for items.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Items
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-items-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-root-api
+  name: GeoInsight Root API
+  description: The root API from GeoInsight — 1 operation(s) for root.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - root
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-root-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-zone-id-api
+  name: GeoInsight Zone ID API
+  description: The Zone ID API from GeoInsight — 2 operation(s) for zone id.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Zone ID
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-zone-id-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-zones-api
+  name: GeoInsight Zones API
+  description: The Zones API from GeoInsight — 2 operation(s) for zones.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Zones
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-zones-api-openapi.yml
+  - type: Documentation
+    url: https://api.geoinsight.ai/api?f=html
+  - type: APIReference
+    url: https://api.geoinsight.ai/api?f=html
+  - type: Authentication
+    url: authentication/geoinsight-authentication.yml
+  - type: Conventions
+    url: conventions/geoinsight-conventions.yml
+  - type: DataModel
+    url: data-model/geoinsight-data-model.yml
+  - type: ErrorCatalog
+    url: errors/geoinsight-problem-types.yml
+  - type: ToolCrosswalk
+    url: mcp/geoinsight-tool-crosswalk.yml
 common:
   - type: AgenticAccess
     url: agentic-access/geoinsight-agentic-access.yml
