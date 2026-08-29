@@ -10,6 +10,18 @@ description: >-
   statistics and STAC search strategies. Target markets are OSINT and maritime intelligence, climate and
   environment, agriculture and food security, infrastructure and urban planning, disaster response, and finance
   and risk. The company is an NVIDIA Inception member and participates in the OGC AI-DGGS pilot programme.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://geoinsight.ai/og-image.png
 url: https://raw.githubusercontent.com/api-evangelist/geoinsight/refs/heads/main/apis.yml
 created: '2026-08-20'
