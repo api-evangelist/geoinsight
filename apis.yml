@@ -94,6 +94,8 @@ apis:
   humanURL: https://api.geoinsight.ai/api?f=html
   baseURL: https://api.geoinsight.ai
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -190,6 +192,8 @@ apis:
   humanURL: https://api.geoinsight.ai/api?f=html
   baseURL: https://api.geoinsight.ai
   tags:
+  - Item
+  tags_raw:
   - Items
   properties:
   - type: OpenAPI
@@ -214,6 +218,8 @@ apis:
   humanURL: https://api.geoinsight.ai/api?f=html
   baseURL: https://api.geoinsight.ai
   tags:
+  - Root
+  tags_raw:
   - root
   properties:
   - type: OpenAPI
