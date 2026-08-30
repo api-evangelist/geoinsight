@@ -1,0 +1,145 @@
+generated: '2026-08-20'
+method: derived
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+name: GeoInsight OGC API - DGGS Data Model
+description: >-
+  Entity graph derived from the 28 component schemas and the path hierarchy of the published OpenAPI, plus
+  the live catalogue at https://api.geoinsight.ai/collections and the DGGRS registry at
+  https://api.geoinsight.ai/dggs. The model has two axes that meet at Zone Data: a data axis
+  (Collection -> Feature / GeoParquet lake) and a grid axis (DGGRS -> Zone). The product - a "Spatial
+  Token" - is the intersection: one collection's values aggregated into one zone of one grid at one depth.
+root: RootResponse
+entities:
+  - name: Root
+    schema: RootResponse
+    path: /
+    description: Service landing page. Carries title, description, attribution and the links[] array that bootstraps discovery.
+    fields: [links, title, description, attribution]
+  - name: Collection
+    schema: CollectionId
+    path: '/collections/{collection_id}'
+    identifier: id
+    id_style: >-
+      Opaque human-readable string. Observed families - Sentinel-2 scene ids
+      (S2A_MSIL2A_20230909T185941_N0510_R013_T11UMU_20241104T170811), RADARSAT Constellation product ids
+      with polarisation suffixes (RCM3_..._RL / _RR / _RRRL), COG filenames
+      (OIS-Reech_A12426_011_PlanarRectified_cog) and curated slugs (ais, canada_dem, alberta_buildings,
+      overture_admin0, overture_admin1, cubewerx_buildings, landsat_test1, data_integration_res6).
+    fields: [id, title, description, links, item_type, attribution, crs, extent]
+    live_count: 22
+    live_evidence: 'https://api.geoinsight.ai/collections?f=json returned 22 collections on 2026-08-20'
+  - name: Extent
+    schema: Extent
+    fields: [spatial, temporal]
+    description: Bounding box and time interval of a collection.
+  - name: Spatial
+    schema: Spatial
+    fields: [bbox, crs]
+  - name: Temporal
+    schema: Temporal
+    fields: [interval, trs]
+  - name: DGGRS
+    schema: DggrsIdResponse
+    path: '/dggs/{dggrs_id}'
+    identifier: id
+    id_style: 'Short uppercase registry name.'
+    fields: [id, title, uri, description, crs, default_depth, max_refinement_level, max_relative_depth, links]
+    live_members: [ISEA3HDGGRID, IGEO7, H3, ISEA3HDGGAL, IVEA3H]
+    live_evidence: >-
+      https://api.geoinsight.ai/dggs?f=json. GET /dggs/H3 returns default_depth 4,
+      max_refinement_level 16, max_relative_depth 6.
+  - name: Zone
+    schema: ZoneIdResponse
+    path: '/dggs/{dggrs_id}/zones/{zone_id}'
+    identifier: id
+    id_style: >-
+      The DGGRS's own native zone identifier - an H3 cell index for H3, and the corresponding native index
+      for ISEA3H/IGEO7/IVEA3H. Validated by the underlying grid library, which reports its own diagnostic
+      in the error hint on a bad id.
+    fields:
+      [id, level, geometry, centroid, bbox, crs, shapeType, areaMetersSquare, volumeMetersCube,
+       temporalInterval, temporalDurationSeconds, statistics, links]
+  - name: ZoneStatistics
+    schema: ValueItem
+    fields: [minimum, maximum, average, stdDev]
+    description: Per-property summary statistics attached to a zone.
+  - name: ZoneData
+    schema: DataResponse
+    path: '/collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data'
+    fields: [dggrs, zoneId, depths, defaultDepth, dimensions, schema, links]
+    description: >-
+      The Spatial Token payload - one collection's values resolved onto one zone of one DGGRS, aggregated
+      across one or more relative depths.
+  - name: Dimension
+    schema: Dimension
+    fields: [name, grid, interval, definition, unit, unitLang]
+  - name: Grid
+    schema: Grid
+    fields: [cellsCount, resolution, coordinates, firstCoordinate, boundCoordinates, relativeBounds]
+  - name: DataSchema
+    schema: Schema
+    fields: [type, properties, required]
+    description: JSON-Schema-shaped description of the queryable properties available on a zone-data response.
+  - name: SchemaProperty
+    schema: SchemaProperty
+    fields:
+      [title, type, format, description, enum, pattern, minimum, maximum, exclusiveMinimum,
+       exclusiveMaximum, minItems, maxItems, contentMediaType, x-ogc-definition]
+    note: 'x-ogc-definition carries the OGC definition URI for the property - the semantic hook.'
+  - name: Feature
+    schema: FeatureResponse
+    path: '/collections/{collection_id}/items/{feature_id}'
+    identifier: feature_id
+    id_style: >-
+      NOT a stable identifier. The spec documents offset as a "0-based row offset into the lake parquet",
+      and feature_id addresses that row. A row's id can change when the underlying parquet is rewritten.
+    fields: [type, id, geometry, properties, links]
+  - name: FeatureCollection
+    schema: FeatureCollectionResponse
+    path: '/collections/{collection_id}/items'
+    fields: [type, timeStamp, numberMatched, numberReturned, features, links]
+  - name: RawItems
+    schema: RawItemsResponse
+    description: 'The f=json inspection view of the items surface - exposes the physical parquet layout.'
+    fields: [collection, source, numberMatched, numberReturned, limit, offset, files, columns, items, links]
+  - name: FileInfo
+    schema: FileInfo
+    fields: [file, rows]
+  - name: Link
+    schema: Link
+    fields: [href, rel, type, title, hreflang, length]
+  - name: LinkTemplate
+    schema: LinkTemplate
+    fields: [rel, title, uriTemplate]
+  - name: ApiError
+    schema: ApiError
+    fields: [code, message, hint, redirect_location]
+relationships:
+  - {from: Root, to: Collection, type: has_many, via: 'links[rel=data] / /collections'}
+  - {from: Root, to: DGGRS, type: has_many, via: '/dggs'}
+  - {from: Collection, to: Extent, type: has_one, via: extent}
+  - {from: Extent, to: Spatial, type: has_one, via: spatial}
+  - {from: Extent, to: Temporal, type: has_one, via: temporal}
+  - {from: Collection, to: Link, type: has_many, via: links}
+  - {from: Collection, to: FeatureCollection, type: has_one, via: '/collections/{collection_id}/items'}
+  - {from: Collection, to: DGGRS, type: has_many, via: '/collections/{collection_id}/dggs (grids available for this collection)'}
+  - {from: FeatureCollection, to: Feature, type: has_many, via: features}
+  - {from: RawItems, to: FileInfo, type: has_many, via: files}
+  - {from: DGGRS, to: Zone, type: has_many, via: '/dggs/{dggrs_id}/zones'}
+  - {from: Zone, to: ZoneStatistics, type: has_many, via: statistics}
+  - {from: Zone, to: Link, type: has_many, via: links}
+  - {from: ZoneData, to: Zone, type: belongs_to, via: zoneId}
+  - {from: ZoneData, to: DGGRS, type: belongs_to, via: dggrs}
+  - {from: ZoneData, to: Dimension, type: has_many, via: dimensions}
+  - {from: ZoneData, to: DataSchema, type: has_one, via: schema}
+  - {from: Dimension, to: Grid, type: has_one, via: grid}
+  - {from: DataSchema, to: SchemaProperty, type: has_many, via: properties}
+  - {from: Collection, to: ZoneData, type: has_many, via: '/collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data'}
+join_key:
+  entity: ZoneData
+  note: >-
+    The zone identifier is the join key of the whole platform and the reason the company calls it a
+    Spatial Token. Any two collections resolved onto the same DGGRS at the same zone id are directly
+    joinable without reprojection or resampling - which is exactly what the live data_integration_res6 /
+    data_integration_res8 (air quality) and data_interop_res6 / data_interop_res10 (hydrography)
+    collections demonstrate: the same use case published at two grid resolutions.

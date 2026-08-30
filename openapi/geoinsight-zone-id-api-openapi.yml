@@ -1,0 +1,219 @@
+openapi: 3.2.0
+info:
+  title: oda Zone ID API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: Zone ID
+paths:
+  /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}:
+    get:
+      tags:
+      - Zone ID
+      operationId: collection_id_dggrs_id_zone_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: zone_id
+        in: path
+        description: Zone identifier
+        required: true
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Default: true.'
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Get ZONES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneIdResponse'
+            text/html:
+              schema:
+                type: string
+            application/geo+json:
+              schema:
+                type: string
+  /dggs/{dggrs_id}/zones/{zone_id}:
+    get:
+      tags:
+      - Zone ID
+      operationId: dggrs_id_zone_id_utoipa_doc
+      parameters:
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: zone_id
+        in: path
+        description: Zone identifier
+        required: true
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Default: true.'
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Get ZONES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZoneIdResponse'
+            text/html:
+              schema:
+                type: string
+            application/geo+json:
+              schema:
+                type: string
+components:
+  schemas:
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    ZoneIdResponse:
+      type: object
+      required:
+      - id
+      - links
+      properties:
+        areaMetersSquare:
+          type:
+          - number
+          - 'null'
+          format: double
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            format: double
+          description: '[min_lon, min_lat, max_lon, max_lat] per OGC DGGS API spec'
+        centroid:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            format: double
+          description: '[lon, lat] per OGC DGGS API spec'
+        crs:
+          type:
+          - string
+          - 'null'
+        geometry:
+          type: object
+        id:
+          type: string
+        level:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        shapeType:
+          type:
+          - string
+          - 'null'
+        statistics:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            $ref: '#/components/schemas/ValueItem'
+          propertyNames:
+            type: string
+        temporalDurationSeconds:
+          type:
+          - number
+          - 'null'
+          format: double
+        temporalInterval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        volumeMetersCube:
+          type:
+          - number
+          - 'null'
+          format: double
+    ValueItem:
+      type: object
+      properties:
+        average:
+          type:
+          - number
+          - 'null'
+          format: double
+        maximum:
+          type:
+          - number
+          - 'null'
+          format: double
+        minimum:
+          type:
+          - number
+          - 'null'
+          format: double
+        stdDev:
+          type:
+          - number
+          - 'null'
+          format: double

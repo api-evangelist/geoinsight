@@ -1,0 +1,115 @@
+generated: '2026-08-20'
+method: derived
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+name: GeoInsight Error Catalog
+description: >-
+  GeoInsight uses a single custom error envelope, ApiError, on every documented failure. It is NOT RFC 9457
+  problem+json - there is no type URI, no instance, and the media type is application/json. The envelope
+  does carry a `hint` field that the service populates with an actionable, human-readable remediation
+  string, which is genuinely more useful than most error bodies at this size. The catalog below is derived
+  from the 4xx responses declared in the contract plus one 500 observed live; GeoInsight publishes no
+  error-code reference page, so there is no registry of stable codes to enrich this with.
+format: custom
+rfc9457: false
+envelope:
+  schema: ApiError
+  media_type: application/json
+  fields:
+    - {name: code, type: integer, required: true, description: HTTP status code repeated in the body, example: 422}
+    - {name: message, type: string, required: true, description: Fixed message describing the error, example: Validation Failed}
+    - name: hint
+      type: [string, 'null']
+      required: false
+      description: Optional hint to help the client fix the request
+      example: 'Parameter `parent-zone-level` is required when `parent-zone` is provided'
+    - {name: redirect_location, type: [string, 'null'], required: false, description: Undocumented. Null in every observed response.}
+  note: >-
+    There is no error `type` URI and no per-error stable code beyond the HTTP status, so a client cannot
+    branch on a machine-readable error identity - only on the status and on string-matching the hint.
+problems:
+  - status: 400
+    title: Invalid collection id or parameters
+    schema: ApiError
+    source_operations:
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items'
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items/{feature_id}'
+    remediation: >-
+      Check the collection_id against GET /collections, and validate bbox (four CRS84 numbers), datetime
+      (RFC 3339 instant or interval) and filter (CQL2) syntax.
+  - status: 404
+    title: No parquet data in the lake for this collection
+    schema: ApiError
+    source_operations:
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items'
+    remediation: >-
+      The collection exists in the catalogue but has no backing GeoParquet. Not every collection listed at
+      /collections has an /items surface; use the DGGS zone routes for raster-backed collections.
+  - status: 404
+    title: Collection has no lake data or feature_id is out of range
+    schema: ApiError
+    source_operations:
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items/{feature_id}'
+    remediation: >-
+      feature_id is a 0-based row offset into the parquet, not a stable identifier. Read numberMatched
+      from GET .../items first and stay inside it.
+  - status: 406
+    title: Unsupported format (png, tiff)
+    schema: ApiError
+    source_operations:
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items'
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items/{feature_id}'
+    remediation: 'Use f=geojson (default), f=json or f=html on the items routes. Raster formats are not offered here.'
+  - status: 422
+    title: Validation error
+    schema: ApiError
+    source_operations:
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /dggs/{dggrs_id}/zones'
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}/zones'
+      - 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data'
+    remediation: >-
+      Read the hint field, which names the offending parameter. The spec's own example is "Parameter
+      `parent-zone-level` is required when `parent-zone` is provided".
+observed_undeclared:
+  - status: 500
+    title: Internal Server Error
+    method: probed
+    evidence:
+      url: 'https://api.geoinsight.ai/collections/overture_admin0/dggs/H3/zones?f=json&parent-zone=abc'
+      body: >-
+        {"code":500,"message":"Internal Server Error","hint":"H3o error: Invalid H3 zone ID abc: invalid
+        cell index (got Some(2748)): invalid index mode","redirect_location":null}
+    finding: >-
+      A malformed zone identifier returns HTTP 500 rather than the 422 the contract declares for this
+      operation. The ApiError envelope is correctly populated and the hint is precise, but the status is
+      wrong: this is a client input error surfacing as a server fault, so a client retrying on 5xx will
+      retry a request that can never succeed.
+    severity: high
+  - status: 500
+    title: Conformance declaration unavailable
+    method: probed
+    evidence:
+      url: 'https://api.geoinsight.ai/conformance'
+      body: >-
+        Requested application data is not configured correctly. View/enable debug logs for more details.
+      content_type: text/plain
+    finding: >-
+      The OGC-required /conformance endpoint fails with a plain-text 500 that is not even in the ApiError
+      envelope, and the message leaks an internal operations instruction to the caller.
+    severity: high
+  - status: 502
+    title: Bad Gateway
+    method: probed
+    evidence:
+      url: 'https://api.geoinsight.ai/collections/overture_admin0/dggs/H3/zones?f=json&limit=2'
+      body: nginx 502 HTML page
+    finding: >-
+      An unparameterised zone listing on a large collection returned an nginx 502 rather than a JSON
+      error, so the failure is not machine-readable at all and the ApiError contract does not hold at the
+      edge.
+    severity: medium
+gaps:
+  - No published error reference page; there is no registry of stable error codes.
+  - No error `type` URI, so errors have no machine-readable identity beyond the HTTP status.
+  - 'No 401/403 declared or observed anywhere, despite documented GPT/APK credentials.'
+  - 'No 429 declared or observed; no rate-limit contract exists (see rate-limits/geoinsight-rate-limits.yml).'
+  - 'Three of the six failure modes actually observed live (500 on bad zone id, 500 on /conformance, 502 on zones) are undeclared in the contract.'

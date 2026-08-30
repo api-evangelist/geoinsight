@@ -1,0 +1,154 @@
+generated: '2026-08-20'
+method: generated
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 14
+  by_action_class:
+    connected: 14
+  by_consequence:
+    read: 14
+  human_in_the_loop_required: 0
+operations:
+- path: /
+  method: get
+  operationId: root_handler
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections
+  method: get
+  operationId: utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}
+  method: get
+  operationId: collection_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/dggs
+  method: get
+  operationId: collection_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/dggs/{dggrs_id}
+  method: get
+  operationId: collection_id_dggrs_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/dggs/{dggrs_id}/zones
+  method: get
+  operationId: collection_id_dggrs_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}
+  method: get
+  operationId: collection_id_dggrs_id_zone_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data
+  method: get
+  operationId: collection_id_dggrs_id_zone_id_data_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/items
+  method: get
+  operationId: items_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /collections/{collection_id}/items/{feature_id}
+  method: get
+  operationId: item_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dggs
+  method: get
+  operationId: utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dggs/{dggrs_id}
+  method: get
+  operationId: dggrs_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dggs/{dggrs_id}/zones
+  method: get
+  operationId: dggrs_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /dggs/{dggrs_id}/zones/{zone_id}
+  method: get
+  operationId: dggrs_id_zone_id_utoipa_doc
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none

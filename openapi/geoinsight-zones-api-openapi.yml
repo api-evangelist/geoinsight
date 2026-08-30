@@ -1,0 +1,198 @@
+openapi: 3.2.0
+info:
+  title: oda Zones API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: Zones
+paths:
+  /collections/{collection_id}/dggs/{dggrs_id}/zones:
+    get:
+      tags:
+      - Zones
+      operationId: collection_id_dggrs_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Default: true.'
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Get ZONES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZonesResponse'
+            text/html:
+              schema:
+                type: string
+            application/geo+json:
+              schema:
+                type: string
+            application/vnd.apache.parquet:
+              schema:
+                type: string
+            application/vnd.geo+parquet:
+              schema:
+                type: string
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /dggs/{dggrs_id}/zones:
+    get:
+      tags:
+      - Zones
+      operationId: dggrs_id_utoipa_doc
+      parameters:
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Default: true.'
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Get ZONES
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZonesResponse'
+            text/html:
+              schema:
+                type: string
+            application/geo+json:
+              schema:
+                type: string
+            application/vnd.apache.parquet:
+              schema:
+                type: string
+            application/vnd.geo+parquet:
+              schema:
+                type: string
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    ZonesResponse:
+      type: object
+      required:
+      - zones
+      - links
+      properties:
+        linkTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTemplate'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        returnedAreaMetersSquare:
+          type:
+          - number
+          - 'null'
+          format: double
+        zones:
+          type: array
+          items:
+            type: string
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
+    LinkTemplate:
+      type: object
+      required:
+      - rel
+      - title
+      - uriTemplate
+      properties:
+        rel:
+          type: string
+        title:
+          type: string
+        uriTemplate:
+          type: string

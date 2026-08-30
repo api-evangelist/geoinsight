@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: oda Collection ID API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: Collection ID
+paths:
+  /collections/{collection_id}:
+    get:
+      tags:
+      - Collection ID
+      operationId: collection_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get Collection ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionIdResponse'
+            text/html:
+              schema:
+                type: string
+components:
+  schemas:
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
+    Spatial:
+      type: object
+      properties:
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+        crs:
+          type:
+          - string
+          - 'null'
+    Extent:
+      type: object
+      properties:
+        spatial:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Spatial'
+        temporal:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Temporal'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    CollectionIdResponse:
+      type: object
+      required:
+      - id
+      - links
+      properties:
+        attribution:
+          type:
+          - string
+          - 'null'
+        crs:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        description:
+          type:
+          - string
+          - 'null'
+        extent:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Extent'
+        id:
+          type: string
+        item_type:
+          type:
+          - string
+          - 'null'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type:
+          - string
+          - 'null'

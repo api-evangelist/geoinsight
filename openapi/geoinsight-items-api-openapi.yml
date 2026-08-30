@@ -1,0 +1,408 @@
+openapi: 3.2.0
+info:
+  title: oda Items API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: Items
+paths:
+  /collections/{collection_id}/items:
+    get:
+      tags:
+      - Items
+      operationId: items_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Page size (default 10, max 1000)
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: offset
+        in: query
+        description: 0-based row offset into the lake parquet; numberMatched - limit pages the tail of the data
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+      - name: bbox
+        in: query
+        description: Spatial filter min_x,min_y,max_x,max_y (CRS84 lon/lat); rows whose geometry intersects the box. Uses bbox_* zonemap columns and/or ST_Intersects on the geometry column
+        required: false
+        schema:
+          type: string
+      - name: datetime
+        in: query
+        description: 'Temporal filter on the datetime column: RFC 3339 instant or interval (start/end, start/.., ../end)'
+        required: false
+        schema:
+          type: string
+      - name: properties
+        in: query
+        description: Comma-separated columns to keep (geometry is retained for geojson/geoparquet unless excluded explicitly)
+        required: false
+        schema:
+          type: string
+      - name: exclude-properties
+        in: query
+        description: Comma-separated columns to drop
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: CQL2 filter expression over the parquet columns, e.g. population > 10000 AND name LIKE 'A%'
+        required: false
+        schema:
+          type: string
+      - name: filter-lang
+        in: query
+        description: 'Language of filter: cql2-text (default) or cql2-json'
+        required: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: 'Format: geojson (default, FeatureCollection), json (raw inspection view with files, columns and WKB previews), html (table view), parquet (page as a parquet file), geoparquet (page as GeoParquet)'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: One page of the collection's raw lake parquet rows
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollectionResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawItemsResponse'
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid collection id or parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: No parquet data in the lake for this collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '406':
+          description: Unsupported format (png, tiff)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /collections/{collection_id}/items/{feature_id}:
+    get:
+      tags:
+      - Items
+      operationId: item_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: feature_id
+        in: path
+        description: 0-based row index in lake parquet glob scan order (within the filtered set when bbox/datetime are given); only stable while the lake prefix does not change
+        required: true
+        schema:
+          type: integer
+          minimum: 0
+      - name: bbox
+        in: query
+        description: Spatial filter min_x,min_y,max_x,max_y (CRS84 lon/lat)
+        required: false
+        schema:
+          type: string
+      - name: datetime
+        in: query
+        description: 'Temporal filter on the datetime column: RFC 3339 instant or interval'
+        required: false
+        schema:
+          type: string
+      - name: properties
+        in: query
+        description: Comma-separated columns to keep
+        required: false
+        schema:
+          type: string
+      - name: exclude-properties
+        in: query
+        description: Comma-separated columns to drop
+        required: false
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: CQL2 filter expression over the parquet columns
+        required: false
+        schema:
+          type: string
+      - name: filter-lang
+        in: query
+        description: 'Language of filter: cql2-text (default) or cql2-json'
+        required: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: 'Format: geojson (default, Feature), json (raw row), html (property table), parquet / geoparquet (single-row file)'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A single raw lake parquet row
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/FeatureResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RawItemResponse'
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid collection id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Collection has no lake data or feature_id is out of range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '406':
+          description: Unsupported format (png, tiff)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    RawItemsResponse:
+      type: object
+      description: 'Raw inspection view (`f=json`): rows exactly as they sit in the lake
+
+        parquet (geometry as a truncated WKB hex preview), plus the file list and
+
+        row counts a local `SELECT * FROM read_parquet(''s3://…'')` would show.'
+      required:
+      - collection
+      - source
+      - numberMatched
+      - numberReturned
+      - limit
+      - offset
+      - files
+      - columns
+      - items
+      - links
+      properties:
+        collection:
+          type: string
+        columns:
+          type: array
+          items:
+            type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileInfo'
+        items:
+          type: array
+          items:
+            type: object
+        limit:
+          type: integer
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        numberReturned:
+          type: integer
+          minimum: 0
+        offset:
+          type: integer
+          minimum: 0
+        source:
+          type: string
+          description: The `read_parquet` glob the rows were read from.
+    FeatureResponse:
+      type: object
+      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
+
+        row index in glob scan order (the raw parquet carries no guaranteed id
+
+        column) — only stable while the lake prefix doesn''t change.'
+      required:
+      - type
+      - id
+      - geometry
+      - properties
+      properties:
+        geometry:
+          type: object
+        id:
+          type: integer
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        properties:
+          type: object
+        type:
+          type: string
+    RawItemResponse:
+      type: object
+      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
+      required:
+      - collection
+      - source
+      - numberMatched
+      - feature_id
+      - item
+      - links
+      properties:
+        collection:
+          type: string
+        feature_id:
+          type: integer
+          minimum: 0
+        item:
+          type: object
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        source:
+          type: string
+          description: The `read_parquet` glob the row was read from.
+    FileInfo:
+      type: object
+      description: One parquet file under the collection's lake data prefix with its row count.
+      required:
+      - file
+      - rows
+      properties:
+        file:
+          type: string
+        rows:
+          type: integer
+          format: int64
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    FeatureCollectionResponse:
+      type: object
+      description: OGC API Features `getFeatures` response over the collection's lake parquet.
+      required:
+      - type
+      - timeStamp
+      - numberMatched
+      - numberReturned
+      - features
+      - links
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureResponse'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        numberReturned:
+          type: integer
+          minimum: 0
+        timeStamp:
+          type: string
+        type:
+          type: string

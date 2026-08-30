@@ -1,0 +1,41 @@
+generated: '2026-08-20'
+method: probed
+source: 'Live unauthenticated responses from https://api.geoinsight.ai (response headers inspected on 2026-08-20)'
+name: GeoInsight Rate Limits
+description: >-
+  GeoInsight publishes no rate limits and its API emits no rate-limit signal of any kind. No RateLimit-*
+  (RFC 9239 draft), no X-RateLimit-*, no Retry-After, and no 429 anywhere in the contract or in any
+  observed response. An agent calling this API has no runtime signal telling it to slow down and no
+  documented budget to plan against.
+limit_count: 0
+documented: false
+headers: []
+status_on_exhaustion: null
+retry_after: false
+observed_response_headers:
+  - date
+  - content-type
+  - content-length
+  - 'vary (Origin, Access-Control-Request-Method, Access-Control-Request-Headers)'
+  - 'strict-transport-security (max-age=15724800; includeSubDomains)'
+evidence:
+  - {url: 'https://api.geoinsight.ai/collections?f=json', status: 200, note: 'Full header set captured; no rate-limit header present'}
+  - {url: 'https://api.geoinsight.ai/dggs/H3?f=json', status: 200, note: 'No rate-limit header present'}
+  - {url: 'https://api.geoinsight.ai/api?f=json', status: 200, note: 'No rate-limit header present'}
+related_limits:
+  - scope: per-request
+    parameter: limit
+    window: n/a
+    limit: 1000
+    default: 10
+    applies_to: '/collections/{collection_id}/items'
+    note: >-
+      This is a page-size cap, not a rate limit. It is the only numeric ceiling published anywhere in the
+      contract, and it is recorded here so it is not mistaken for a quota.
+note: >-
+  Recorded as limit_count 0 with evidence rather than omitted. Two observations make the absence
+  consequential rather than merely undocumented. First, an unparameterised zone listing
+  (/collections/overture_admin0/dggs/H3/zones) returned an nginx 502 rather than a 429 or a bounded
+  result - the service failed under a request it had no mechanism to refuse. Second, the DGGS zone
+  routes accept no limit or offset parameter at all, so a caller cannot voluntarily bound a zone query
+  even if it wants to.

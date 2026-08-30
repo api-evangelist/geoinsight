@@ -1,0 +1,60 @@
+generated: '2026-08-20'
+method: derived
+source: 'mcp/geoinsight-mcp.yml + openapi/geoinsight-ogc-api-dggs-openapi.yml'
+name: GeoInsight Tool Crosswalk
+description: >-
+  Binds each candidate MCP tool to the REST operation that would back it. GeoInsight ships no MCP server
+  and no GraphQL endpoint, so this is a one-sided crosswalk - REST is the only real surface and there is
+  no divergence to record. It is emitted anyway because it is where the contract's operationId collision
+  becomes visible as an agent-binding problem rather than a spec-lint nit: four pairs of operations cannot
+  be distinguished by id, so a tool bound by operationId would fan out to two different resources.
+surfaces:
+  openapi:
+    file: openapi/geoinsight-ogc-api-dggs-openapi.yml
+    live: 'https://api.geoinsight.ai/api?f=json'
+    gated: false
+    operations: 14
+    unique_operation_ids: 10
+  graphql: null
+  mcp: null
+  mcp_note: 'No hosted MCP server and no stdio package. See mcp/geoinsight-mcp.yml deployment block.'
+crosswalk:
+  - {tool: get_service_root, category: discovery, rest: [root_handler], binding: rest, confidence: high}
+  - tool: list_collections
+    category: catalog
+    rest: [utoipa_doc]
+    binding: rest
+    confidence: low
+    note: 'operationId utoipa_doc also names GET /dggs. Bound by path GET /collections, not by id.'
+  - {tool: get_collection, category: catalog, rest: [collection_id_utoipa_doc], binding: rest, confidence: low, note: 'operationId also names GET /collections/{collection_id}/dggs. Bound by path.'}
+  - {tool: list_dggrs, category: grid, rest: [utoipa_doc], binding: rest, confidence: low, note: 'operationId also names GET /collections. Bound by path GET /dggs.'}
+  - {tool: get_dggrs, category: grid, rest: [dggrs_id_utoipa_doc], binding: rest, confidence: low, note: 'operationId also names GET /dggs/{dggrs_id}/zones. Bound by path.'}
+  - {tool: list_collection_dggrs, category: grid, rest: [collection_id_utoipa_doc], binding: rest, confidence: low, note: 'Shares its id with GET /collections/{collection_id}. Bound by path.'}
+  - {tool: get_collection_dggrs, category: grid, rest: [collection_id_dggrs_id_utoipa_doc], binding: rest, confidence: low, note: 'Shares its id with the /zones child. Bound by path.'}
+  - {tool: list_zones, category: zones, rest: [dggrs_id_utoipa_doc], binding: rest, confidence: low, note: 'Shares its id with GET /dggs/{dggrs_id}. Bound by path.'}
+  - {tool: get_zone, category: zones, rest: [dggrs_id_zone_id_utoipa_doc], binding: rest, confidence: high}
+  - {tool: list_collection_zones, category: zones, rest: [collection_id_dggrs_id_utoipa_doc], binding: rest, confidence: low, note: 'Shares its id with the parent DGGRS route. Bound by path.'}
+  - {tool: get_collection_zone, category: zones, rest: [collection_id_dggrs_id_zone_id_utoipa_doc], binding: rest, confidence: high}
+  - {tool: get_zone_data, category: data, rest: [collection_id_dggrs_id_zone_id_data_utoipa_doc], binding: rest, confidence: high, note: 'The marquee operation - 18 parameters, the richest input schema in the contract.'}
+  - {tool: search_collection_items, category: features, rest: [items_utoipa_doc], binding: rest, confidence: high}
+  - {tool: get_collection_item, category: features, rest: [item_id_utoipa_doc], binding: rest, confidence: high}
+mcp_only: []
+graphql_only: []
+rest_only: []
+rest_only_note: >-
+  Every one of the 14 REST operations has a candidate tool, so there are no unmapped operations. There is
+  also nothing on the MCP side to be MCP-only, because no MCP server exists.
+coverage:
+  tools_named: 14
+  tools_bound: 14
+  bound_by_unique_operation_id: 6
+  bound_by_path_due_to_id_collision: 8
+  mcp_only: 0
+  graphql_only: 0
+  rest_operations_total: 14
+  rest_operations_with_tool: 14
+finding: >-
+  8 of 14 candidate tools cannot be bound by operationId because the id is ambiguous. Any automated
+  OpenAPI-to-MCP generator run against this contract as published will either collide on those ids or drop
+  half the surface silently. Making operationId unique is a generator-configuration change on GeoInsight's
+  side and is the single highest-leverage fix for agent consumption of this API.

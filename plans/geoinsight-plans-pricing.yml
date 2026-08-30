@@ -1,0 +1,29 @@
+generated: '2026-08-20'
+method: searched
+source: https://geoinsight.ai/
+name: GeoInsight Plans and Pricing
+description: >-
+  GeoInsight publishes no pricing. The corporate site has exactly three pages - home, terms and privacy,
+  confirmed against its own sitemap.xml - and the only commercial call to action is a "Get Early Access"
+  contact form that submits to info@geoinsight.ai. There are no tiers, no quotas, no overage rates and no
+  self-serve signup path. The company describes itself as Data-as-a-Service, so a commercial model exists;
+  it is simply not published.
+plan_count: 0
+model: contact-sales
+self_serve_signup: false
+free_tier: unknown
+probes:
+  - {url: 'https://geoinsight.ai/pricing', status: 404}
+  - {url: 'https://geoinsight.ai/sitemap.xml', status: 200, note: 'Lists only /, /privacy/ and /terms/'}
+  - {url: 'https://dashboard.geoinsight.ai/', status: 404, note: 'Signup/dashboard host is unreachable - nginx 404 behind a fake Kubernetes ingress certificate'}
+  - {url: 'https://geoinsight.ai/terms', status: 200, note: 'Terms page reviewed; contains no pricing, quota or billing terms'}
+plans: []
+commercial_contacts:
+  - {kind: general, value: 'info@geoinsight.ai'}
+  - {kind: phone, value: '+49 151 2207 3413'}
+note: >-
+  Recorded as plan_count 0 with a stated reason rather than omitted. The finding is not that pricing is
+  hidden behind a sales conversation - that is an ordinary and legitimate model - but that the
+  self-serve path the provider's own official SDK documents (create an account at
+  dashboard.geoinsight.ai, receive a GeoInsight Personal Token and API Private Key) does not resolve,
+  so there is currently no route to a credential at any price.

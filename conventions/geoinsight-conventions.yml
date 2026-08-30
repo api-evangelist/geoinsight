@@ -1,0 +1,166 @@
+generated: '2026-08-20'
+method: derived
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+probes:
+  - {url: 'https://api.geoinsight.ai/collections?f=json', status: 200}
+  - {url: 'https://api.geoinsight.ai/dggs/H3?f=json', status: 200}
+  - {url: 'https://api.geoinsight.ai/api?f=html', status: 200}
+name: GeoInsight API Conventions
+description: >-
+  Cross-cutting request and response semantics for the GeoInsight OGC API - DGGS. The API is entirely
+  read-only - 14 operations, all GET, no request bodies anywhere in the contract - which settles several
+  of the runtime-semantics dimensions as not-applicable rather than absent. GeoInsight publishes no
+  conventions or getting-started document, so everything here is derived from the contract and from live
+  probes.
+authentication:
+  style: none-declared
+  detail: >-
+    The contract declares no securityScheme and every probed operation answered anonymously. The official
+    Python package documents a GeoInsight Personal Token plus API Private Key, but neither the header name
+    nor the scheme is published. See authentication/geoinsight-authentication.yml.
+content_negotiation:
+  mechanism: query-parameter-first
+  parameter: f
+  header_fallback: true
+  detail: >-
+    Format is selected with the ?f= query parameter on nearly every route, with the spec stating that the
+    zone-data operation "defaults to content negotiation via the Accept header" when f is omitted. This is
+    the OGC API convention.
+  values:
+    items: [geojson, json, html]
+    zone_data: [json, 'dggs+json', 'geo+json', html, parquet, geoparquet]
+    service: [json, html]
+  note: >-
+    f=json on the items route is explicitly a different representation, not a different encoding of the
+    same one - the spec calls it the "raw inspection view with files, columns and WKB previews", i.e. it
+    exposes the physical GeoParquet layout rather than the feature model.
+pagination:
+  style: limit-offset
+  applies_to: '/collections/{collection_id}/items'
+  request_params:
+    - {name: limit, default: 10, max: 1000, note: Page size}
+    - {name: offset, note: '0-based row offset into the lake parquet'}
+  response_fields: [numberMatched, numberReturned]
+  link_relations: false
+  cursor: false
+  detail: >-
+    The spec notes "numberMatched - limit pages the tail of the data". There are no rel=next / rel=prev
+    links, so a client must compute its own page boundaries from numberMatched. The DGGS zone routes
+    (/dggs/{dggrs_id}/zones and the collection-scoped equivalent) expose no paging parameters at all,
+    which is a real limitation on a resource that can enumerate very large zone sets - and is the likely
+    cause of the 502 recorded in errors/geoinsight-problem-types.yml.
+filtering:
+  spatial:
+    parameter: bbox
+    format: 'min_x,min_y,max_x,max_y in CRS84 lon/lat'
+    semantics: rows whose geometry intersects the box
+    implementation_note: 'The spec states it uses bbox_* zonemap columns.'
+  temporal:
+    parameter: datetime
+    format: 'RFC 3339 instant, or interval as start/end, start/.. or ../end'
+  attribute:
+    parameter: filter
+    language_parameter: filter-lang
+    languages: [cql2-text, cql2-json]
+    default: cql2-text
+    example: "population > 10000 AND name LIKE 'A%'"
+sparse_fieldsets:
+  supported: true
+  include_param: properties
+  exclude_param: exclude-properties
+  order: 'properties is applied first, then exclude-properties'
+  detail: >-
+    Both the items and zone-data routes accept comma-separated column lists. On the items route geometry
+    is retained for geojson and geoparquet output unless excluded explicitly.
+aggregation:
+  parameter: zone-depth
+  detail: >-
+    Relative depth of child zones to aggregate. Accepts a single integer or a comma-separated list, and
+    defaults to the DGGRS default_depth (4 for H3). This is the DGGS-specific analogue of a zoom level and
+    is the main cost/precision dial on a data request.
+raster_semantics:
+  detail: >-
+    Zone-data requests can summarise raster sources without a registered collection. cog-url points at an
+    arbitrary Cloud Optimized GeoTIFF; cog-stat selects from count, valid, min, max, mean, median
+    (default mean); cog-band takes 1-based band indices (default 1); cog-no-data-value overrides the
+    no-data sentinel; cog-sampling-factor sets sampling density relative to zone count (default 8.0);
+    cog-all-touched includes edge-touched pixels (default false). STAC-backed collections add
+    stac-search-strategy (single, latest, mosaic), intersection_percent and cloud_cover_percent.
+  parameter_naming_defect: >-
+    Parameter naming is inconsistent within the same operation: most are kebab-case (zone-depth, cog-url,
+    exclude-properties, stac-search-strategy) but intersection_percent and cloud_cover_percent are
+    snake_case. A client cannot infer the convention.
+metadata: {supported: false, detail: No user-supplied metadata surface. The API is read-only.}
+request_tracing:
+  request_id_header: none
+  detail: >-
+    No X-Request-Id, no correlation id, and none echoed in the ApiError envelope. There is no handle a
+    caller can quote when reporting a failure - which matters given the 500s and 502s recorded live.
+versioning:
+  scheme: none-in-path
+  current: '3.0.0'
+  detail: >-
+    The OpenAPI declares info.version 3.0.0 but no version appears in any path, in any header, or in any
+    media type. There is no way for a client to pin a version or to detect that the contract changed. See
+    lifecycle/geoinsight-lifecycle.yml.
+error_envelope:
+  shape: 'ApiError - {code, message, hint, redirect_location}'
+  media_type: application/json
+  rfc9457: false
+  reference: errors/geoinsight-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: null
+  detail: >-
+    No RateLimit-*, no X-RateLimit-*, no Retry-After observed on any response, and no 429 declared in the
+    contract. See rate-limits/geoinsight-rate-limits.yml.
+caching:
+  headers_observed: []
+  detail: >-
+    No ETag, no Last-Modified, no Cache-Control on the responses probed. Every response carried only date,
+    content-type, content-length, vary (CORS) and strict-transport-security. For a service whose payloads
+    are large and largely immutable (archived Sentinel-2 scenes), the absence of validators is a real cost
+    on both sides.
+cors:
+  enabled: true
+  evidence: 'Responses carry: vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers'
+  note: >-
+    CORS preflight is handled, which is consistent with the browser-based tester at
+    https://dggs.io/api-tester calling the API directly.
+transport:
+  http_version: HTTP/2
+  hsts: 'max-age=15724800; includeSubDomains'
+  head_support: false
+  head_note: >-
+    HEAD https://api.geoinsight.ai/ returns 404 while GET on the same path returns 200. Clients that probe
+    with HEAD - including several automated availability checkers - will read this service as down.
+idempotency:
+  supported: na
+  reason: >-
+    The API is read-only. All 14 operations are GET, which HTTP already defines as safe and idempotent.
+    There is no write path, so there is no idempotency key to require and nothing to double-fire. No
+    Idempotency pointer is emitted for this provider.
+dry_run_mode:
+  supported: na
+  reason: No write surface, so there is no action to rehearse.
+reversibility:
+  grade: na
+  applicable: false
+  reason: >-
+    The API is read-only - 14 GET operations, zero request bodies, no POST/PUT/PATCH/DELETE anywhere in
+    the contract. Nothing an agent can call through this API changes state on GeoInsight's side, so there
+    is no action to reverse and no window inside which to reverse it. Recorded as na rather than 0 so it
+    leaves the denominator. This assessment holds only for the OGC API - DGGS surface catalogued here; if
+    GeoInsight later exposes a write surface (collection registration, token minting, dataset upload) this
+    must be re-evaluated.
+    Note that the ApiError schema carries an undocumented redirect_location field, which is the only field
+    in the contract hinting at any non-read behaviour; it was null in every observed response and no
+    documentation for it could be found.
+  write_surfaces: []
+cross_references:
+  authentication: authentication/geoinsight-authentication.yml
+  errors: errors/geoinsight-problem-types.yml
+  lifecycle: lifecycle/geoinsight-lifecycle.yml
+  rate_limits: rate-limits/geoinsight-rate-limits.yml
+  conformance: conformance/geoinsight-conformance.yml
+  data_model: data-model/geoinsight-data-model.yml

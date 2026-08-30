@@ -1,0 +1,72 @@
+generated: '2026-08-20'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: geoinsight.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 12 07:12:37 2026 GMT
+  hsts: false
+- host: api.geoinsight.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 24 23:59:59 2026 GMT
+  hsts: null
+domains:
+- domain: geoinsight.ai
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+
+# --- API Evangelist enrichment pass 2026-08-20 (same probed method; adds hosts the script does not
+# --- reach and corrects one HSTS reading the script recorded as null) ---
+x-additional-observations:
+  api_geoinsight_ai_hsts:
+    host: api.geoinsight.ai
+    hsts: true
+    hsts_header: max-age=15724800; includeSubDomains
+    note: >-
+      Recorded as null above because the automated probe uses HEAD, and this API answers HEAD / with
+      404 while answering GET / with 200. Observed on GET https://api.geoinsight.ai/collections?f=json,
+      HTTP 200: strict-transport-security: max-age=15724800; includeSubDomains. max-age is 182 days,
+      below the 1-year value HSTS preload requires.
+  dead_or_misconfigured_hosts:
+    note: >-
+      Three GeoInsight subdomains resolve and accept TCP 443 but present a self-signed
+      "O=Acme Co, CN=Kubernetes Ingress Controller Fake Certificate" - the default certificate an
+      unconfigured ingress-nginx serves. An ordinary client cannot complete the handshake. Behind the
+      bad certificate every path returns a 404. Two of the three are load-bearing: the API's own root
+      document attributes to docs.geoinsight.ai, and the official PyPI package tells users to get their
+      credentials from dashboard.geoinsight.ai.
+    hosts:
+      - host: dggs.geoinsight.ai
+        ip: 62.113.194.100
+        tls: fake-kubernetes-ingress-certificate
+        cert_subject: O=Acme Co, CN=Kubernetes Ingress Controller Fake Certificate
+        cert_not_after: Jul 27 10:31:16 2027 GMT
+        http_status_all_paths: 404
+        server: nginx
+        note: Host previously recorded as this provider's baseURL. Corrected to api.geoinsight.ai.
+      - host: docs.geoinsight.ai
+        ip: 62.113.194.100
+        tls: fake-kubernetes-ingress-certificate
+        http_status_all_paths: 404
+        server: nginx
+        note: Named in the API root document's own attribution field. Serves nothing.
+      - host: dashboard.geoinsight.ai
+        ip: 64.225.143.189
+        tls: fake-kubernetes-ingress-certificate
+        cert_not_after: Jun  5 16:58:26 2027 GMT
+        http_status_all_paths: 404
+        body: default backend - 404
+        note: >-
+          Named in the official PyPI geoinsight package README as where a GeoInsight Personal Token and
+          API Private Key are issued. Serves nothing, so the documented credential path is unreachable.
+  dggs_io:
+    host: dggs.io
+    https: true
+    note: >-
+      Separate domain, same operator - the site footer reads "Powered by GeoInsight" and links to
+      geoinsight.ai. Carries the DGGS tooling surface (API tester, zone browser, GeoParquet viewer).

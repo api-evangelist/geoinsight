@@ -1,0 +1,448 @@
+openapi: 3.2.0
+info:
+  title: oda Data API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: Data
+paths:
+  /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data:
+    get:
+      tags:
+      - Data
+      operationId: collection_id_dggrs_id_zone_id_data_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: zone_id
+        in: path
+        description: Zone identifier
+        required: true
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: 'Response format. Accepted values: `json`, `dggs+json`, `geo+json`, `html`, `parquet`, `geoparquet`. Defaults to content negotiation via the `Accept` header.'
+        required: false
+        schema:
+          type: string
+      - name: zone-depth
+        in: query
+        description: Relative depth of child zones to aggregate. Accepts a single integer (e.g. `1`) or a comma-separated list (e.g. `1,2`). Defaults to the DGGRS-defined default depth.
+        required: false
+        schema:
+          type: string
+      - name: datetime
+        in: query
+        description: Temporal filter in RFC 3339 format. Accepts an instant (`2024-01-01T00:00:00Z`) or an interval (`2024-01-01/2025-01-01`). Open-ended intervals use `..` (e.g. `2024-01-01/..`).
+        required: false
+        schema:
+          type: string
+      - name: properties
+        in: query
+        description: Comma-separated list of queryable names to include in the response (e.g. `ndvi,evi`). Returns all queryables when omitted.
+        required: false
+        schema:
+          type: string
+      - name: exclude-properties
+        in: query
+        description: Comma-separated list of queryable names to exclude from the response. Applied after `properties`.
+        required: false
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Relevant for geo+json and geoparquet formats. Default: false.'
+        required: false
+        schema:
+          type: boolean
+      - name: cog-url
+        in: query
+        description: URL of an arbitrary COG to query directly. Used on the /dggs/{dggrs_id}/zones/{zone_id}/data route (no collection). Bypasses collection lookup and caching.
+        required: false
+        schema:
+          type: string
+      - name: cog-stat
+        in: query
+        description: 'Comma-separated statistics for a cog-url query (e.g. mean,min,max). Accepted values: count, valid, min, max, mean, median. Defaults to mean.'
+        required: false
+        schema:
+          type: string
+      - name: cog-band
+        in: query
+        description: Comma-separated 1-based band indices to read (e.g. 1,2,3). Defaults to 1.
+        required: false
+        schema:
+          type: string
+      - name: cog-no-data-value
+        in: query
+        description: Override the COG no-data value. Pixels equal to this value are excluded from statistics. Applies to all raster sources (STAC, URL, direct COG). Overrides the collection-level default.
+        required: false
+        schema:
+          type: number
+          format: double
+      - name: cog-sampling-factor
+        in: query
+        description: Sampling density multiplier relative to zone count. Higher values increase accuracy. Defaults to 8.0.
+        required: false
+        schema:
+          type: number
+          format: double
+      - name: cog-all-touched
+        in: query
+        description: When true, include pixels whose boundaries are only touched by zone polygons. Defaults to false.
+        required: false
+        schema:
+          type: boolean
+      - name: stac-search-strategy
+        in: query
+        description: 'STAC search strategy: `single` (default), `latest`, or `mosaic`. `latest` takes the newest item with no intersection check; `single` takes the newest item individually meeting the intersection threshold; `mosaic` accumulates items newest-first until their combined footprint reaches the coverage target (requires a `datetime` range). Overrides the collection-level default.'
+        required: false
+        schema:
+          type: string
+      - name: intersection_percent
+        in: query
+        description: 'Intersection percentage (0–100) of the parent zone. For `single`: minimum that the chosen item alone must cover (`0` disables the check, default). For `mosaic`: total combined coverage target (unset = 100%). Ignored for `latest`. Overrides the collection-level default.'
+        required: false
+        schema:
+          type: number
+          format: double
+      - name: cloud_cover_percent
+        in: query
+        description: Maximum `eo:cloud_cover` percentage (0–100) allowed for STAC items. Omit to disable the filter (default). Overrides the collection-level default.
+        required: false
+        schema:
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Get DATA
+          content:
+            application/vnd.ogc.dggs+json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+            application/geo+json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.apache.parquet:
+              schema:
+                type: string
+            application/vnd.geo+parquet:
+              schema:
+                type: string
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    NumStr:
+      oneOf:
+      - type: object
+        required:
+        - U8
+        properties:
+          U8:
+            type: integer
+            format: int32
+            minimum: 0
+      - type: object
+        required:
+        - String
+        properties:
+          String:
+            type: string
+    PropertyType:
+      type: string
+      enum:
+      - array
+      - boolean
+      - integer
+      - 'null'
+      - number
+      - object
+      - string
+    SchemaProperty:
+      type: object
+      properties:
+        contentMediaType:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        enum:
+          type:
+          - array
+          - 'null'
+          items: {}
+        exclusiveMaximum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        exclusiveMinimum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        format:
+          type:
+          - string
+          - 'null'
+        maxItems:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        maximum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        minItems:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        minimum:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          minimum: 0
+        pattern:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/PropertyType'
+        x-ogc-definition:
+          type:
+          - string
+          - 'null'
+        x-ogc-unit:
+          type:
+          - string
+          - 'null'
+        x-ogc-unitLang:
+          type:
+          - string
+          - 'null'
+    Grid:
+      type: object
+      required:
+      - cellsCount
+      properties:
+        boundCoordinates:
+          type:
+          - array
+          - 'null'
+          items:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/NumStr'
+        cellsCount:
+          type: integer
+          format: int32
+          minimum: 0
+        coordinates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NumStr'
+        firstCoordinate:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/NumStr'
+        relativeBounds:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NumStr'
+        resolution:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/NumStr'
+    Dimension:
+      type: object
+      required:
+      - name
+      - grid
+      - interval
+      properties:
+        definition:
+          type:
+          - string
+          - 'null'
+        grid:
+          $ref: '#/components/schemas/Grid'
+        interval:
+          type: array
+          items:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/NumStr'
+        name:
+          type: string
+        unit:
+          type:
+          - string
+          - 'null'
+        unitLang:
+          type:
+          - string
+          - 'null'
+    Schema:
+      type: object
+      required:
+      - type
+      - properties
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string
+        required:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        type:
+          $ref: '#/components/schemas/SchemaType'
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
+    SchemaType:
+      type: string
+      enum:
+      - object
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    DataResponse:
+      type: object
+      required:
+      - dggrs
+      - zoneId
+      - depths
+      - links
+      properties:
+        defaultDepth:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        depths:
+          type: array
+          items:
+            type: integer
+            format: int32
+        dggrs:
+          type: string
+        dimensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Dimension'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        schema:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Schema'
+        zoneId:
+          type: string

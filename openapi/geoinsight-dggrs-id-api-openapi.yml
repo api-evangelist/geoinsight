@@ -1,0 +1,135 @@
+openapi: 3.2.0
+info:
+  title: oda DGGRS ID API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
+servers:
+- url: https://api.geoinsight.ai
+  description: GeoInsight OGC API - DGGS production endpoint
+tags:
+- name: DGGRS ID
+paths:
+  /collections/{collection_id}/dggs/{dggrs_id}:
+    get:
+      tags:
+      - DGGRS ID
+      operationId: collection_id_dggrs_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      - name: dggrs_id
+        in: path
+        description: DGGRS_ID identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get collection_id DGGRS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DggrsIdResponse'
+            text/html:
+              schema:
+                type: string
+  /dggs/{dggrs_id}:
+    get:
+      tags:
+      - DGGRS ID
+      operationId: dggrs_id_utoipa_doc
+      parameters:
+      - name: dggrs_id
+        in: path
+        description: DGGRS_ID identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get DGGRS_ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DggrsIdResponse'
+            text/html:
+              schema:
+                type: string
+components:
+  schemas:
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    DggrsIdResponse:
+      type: object
+      required:
+      - id
+      - title
+      - uri
+      properties:
+        crs:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        default_depth:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        max_refinement_level:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        max_relative_depth:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        title:
+          type: string
+        uri:
+          type: string
