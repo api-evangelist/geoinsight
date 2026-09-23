@@ -5,10 +5,6 @@ info:
   license:
     name: ''
   version: 3.0.0
-  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
-servers:
-- url: https://api.geoinsight.ai
-  description: GeoInsight OGC API - DGGS production endpoint
 tags:
 - name: Items
 paths:
@@ -111,6 +107,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+      summary: Items utoipa doc
+      x-summary-source: derived
   /collections/{collection_id}/items/{feature_id}:
     get:
       tags:
@@ -203,6 +201,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+      summary: Item id utoipa doc
+      x-summary-source: derived
 components:
   schemas:
     RawItemsResponse:
@@ -283,6 +283,89 @@ components:
           type: object
         type:
           type: string
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
+    FeatureCollectionResponse:
+      type: object
+      description: OGC API Features `getFeatures` response over the collection's lake parquet.
+      required:
+      - type
+      - timeStamp
+      - numberMatched
+      - numberReturned
+      - features
+      - links
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureResponse'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        numberReturned:
+          type: integer
+          minimum: 0
+        timeStamp:
+          type: string
+        type:
+          type: string
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
     RawItemResponse:
       type: object
       description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
@@ -323,86 +406,3 @@ components:
         rows:
           type: integer
           format: int64
-    ApiError:
-      type: object
-      description: API error response body for JSON error messages.
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
-          type:
-          - string
-          - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
-          type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    FeatureCollectionResponse:
-      type: object
-      description: OGC API Features `getFeatures` response over the collection's lake parquet.
-      required:
-      - type
-      - timeStamp
-      - numberMatched
-      - numberReturned
-      - features
-      - links
-      properties:
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureResponse'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
-          type: integer
-          format: int64
-        numberReturned:
-          type: integer
-          minimum: 0
-        timeStamp:
-          type: string
-        type:
-          type: string

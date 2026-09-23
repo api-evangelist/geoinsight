@@ -5,10 +5,6 @@ info:
   license:
     name: ''
   version: 3.0.0
-  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
-servers:
-- url: https://api.geoinsight.ai
-  description: GeoInsight OGC API - DGGS production endpoint
 tags:
 - name: Collections
 paths:
@@ -27,23 +23,21 @@ paths:
             text/html:
               schema:
                 type: string
+      summary: Utoipa doc
+      x-summary-source: derived
 components:
   schemas:
-    Temporal:
+    Extent:
       type: object
       properties:
-        interval:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: string
-        trs:
-          type:
-          - string
-          - 'null'
+        spatial:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Spatial'
+        temporal:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Temporal'
     CollectionId:
       type: object
       required:
@@ -82,33 +76,6 @@ components:
           type:
           - string
           - 'null'
-    Spatial:
-      type: object
-      properties:
-        bbox:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: number
-              format: double
-        crs:
-          type:
-          - string
-          - 'null'
-    Extent:
-      type: object
-      properties:
-        spatial:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Spatial'
-        temporal:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Temporal'
     CollectionsResponse:
       type: object
       required:
@@ -123,6 +90,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Link'
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
     Link:
       type: object
       required:
@@ -147,6 +129,22 @@ components:
           - string
           - 'null'
         type:
+          type:
+          - string
+          - 'null'
+    Spatial:
+      type: object
+      properties:
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+        crs:
           type:
           - string
           - 'null'

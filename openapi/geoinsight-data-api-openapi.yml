@@ -5,10 +5,6 @@ info:
   license:
     name: ''
   version: 3.0.0
-  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
-servers:
-- url: https://api.geoinsight.ai
-  description: GeoInsight OGC API - DGGS production endpoint
 tags:
 - name: Data
 paths:
@@ -158,6 +154,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+      summary: Collection id dggrs id zone id data utoipa doc
+      x-summary-source: derived
 components:
   schemas:
     NumStr:
@@ -176,16 +174,125 @@ components:
         properties:
           String:
             type: string
-    PropertyType:
-      type: string
-      enum:
-      - array
-      - boolean
-      - integer
-      - 'null'
-      - number
-      - object
-      - string
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
+    Dimension:
+      type: object
+      required:
+      - name
+      - grid
+      - interval
+      properties:
+        definition:
+          type:
+          - string
+          - 'null'
+        grid:
+          $ref: '#/components/schemas/Grid'
+        interval:
+          type: array
+          items:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/NumStr'
+        name:
+          type: string
+        unit:
+          type:
+          - string
+          - 'null'
+        unitLang:
+          type:
+          - string
+          - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    DataResponse:
+      type: object
+      required:
+      - dggrs
+      - zoneId
+      - depths
+      - links
+      properties:
+        defaultDepth:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        depths:
+          type: array
+          items:
+            type: integer
+            format: int32
+        dggrs:
+          type: string
+        dimensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Dimension'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        schema:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Schema'
+        zoneId:
+          type: string
     SchemaProperty:
       type: object
       properties:
@@ -266,6 +373,16 @@ components:
           type:
           - string
           - 'null'
+    PropertyType:
+      type: string
+      enum:
+      - array
+      - boolean
+      - integer
+      - 'null'
+      - number
+      - object
+      - string
     Grid:
       type: object
       required:
@@ -303,35 +420,10 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/NumStr'
-    Dimension:
-      type: object
-      required:
-      - name
-      - grid
-      - interval
-      properties:
-        definition:
-          type:
-          - string
-          - 'null'
-        grid:
-          $ref: '#/components/schemas/Grid'
-        interval:
-          type: array
-          items:
-            oneOf:
-            - type: 'null'
-            - $ref: '#/components/schemas/NumStr'
-        name:
-          type: string
-        unit:
-          type:
-          - string
-          - 'null'
-        unitLang:
-          type:
-          - string
-          - 'null'
+    SchemaType:
+      type: string
+      enum:
+      - object
     Schema:
       type: object
       required:
@@ -352,97 +444,3 @@ components:
             type: string
         type:
           $ref: '#/components/schemas/SchemaType'
-    ApiError:
-      type: object
-      description: API error response body for JSON error messages.
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
-          type:
-          - string
-          - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
-          type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
-    SchemaType:
-      type: string
-      enum:
-      - object
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    DataResponse:
-      type: object
-      required:
-      - dggrs
-      - zoneId
-      - depths
-      - links
-      properties:
-        defaultDepth:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        depths:
-          type: array
-          items:
-            type: integer
-            format: int32
-        dggrs:
-          type: string
-        dimensions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Dimension'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        schema:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Schema'
-        zoneId:
-          type: string

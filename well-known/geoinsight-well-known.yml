@@ -1,0 +1,93 @@
+generated: '2026-08-20'
+method: probed
+source: >-
+  Direct unauthenticated HTTPS probes of every host named in apis.yml, every host reachable from the
+  geoinsight.ai site, and the OpenAPI servers[] host (api.geoinsight.ai).
+name: GeoInsight .well-known Probe
+description: >-
+  No .well-known document is served on any GeoInsight host. api.geoinsight.ai (the live OGC API - DGGS
+  endpoint) returns a hard JSON 404 ("Resource not found") on every path. dashboard.geoinsight.ai and
+  docs.geoinsight.ai return an nginx "default backend - 404" behind an unresolvable TLS chain. The
+  geoinsight.ai marketing site and dggs.io both return HTTP 404 with their SPA shell body, confirmed
+  against a control probe of a guaranteed-nonexistent path. NO WellKnown and NO SecurityTxt pointer is
+  emitted for this provider: nothing here is a hit. geoinsight.ai does serve a robots.txt (200) and a
+  sitemap, but robots.txt is not a /.well-known/ document and does not satisfy the check.
+hit_count: 0
+soft_404_controls:
+  - url: https://geoinsight.ai/.well-known/zzz-control-404
+    status: 404
+    bytes: 8341
+    note: >-
+      Control probe. geoinsight.ai returns the SAME 8,341-byte Next.js not-found shell for every
+      /.well-known/* path, and returns it with a correct 404 status, so it is an honest 404 and not a
+      soft-200 catch-all.
+  - url: https://dggs.io/.well-known/zzz-control-404
+    status: 404
+    bytes: 8799
+    note: Control probe. dggs.io returns the same 8,799-byte Next.js not-found shell with a 404 status.
+  - url: https://api.geoinsight.ai/.well-known/zzz-control-404
+    status: 404
+    bytes: 20
+    note: Control probe. api.geoinsight.ai returns the JSON body "Resource not found" for every unknown path.
+hosts:
+  - host: https://api.geoinsight.ai
+    note: The live OGC API - DGGS endpoint. Hard JSON 404 on every /.well-known/ path.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+  - host: https://geoinsight.ai
+    note: Corporate site (Next.js). Honest 404s. robots.txt is served (200) but is not a .well-known document.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+  - host: https://dggs.io
+    note: GeoInsight-operated DGGS tooling site ("Powered by GeoInsight"). Honest 404s.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+  - host: https://dashboard.geoinsight.ai
+    note: >-
+      Account/dashboard host named in the official PyPI package README as where a GeoInsight Personal Token
+      and API Private Key are issued. Currently serves an nginx "default backend - 404" on every path behind
+      a self-signed "Kubernetes Ingress Controller Fake Certificate" - the host does not complete a TLS
+      handshake for an ordinary client.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+  - host: https://docs.geoinsight.ai
+    note: >-
+      The documentation host the API's own root document links to in its attribution field. Serves an nginx
+      404 on every path behind the same fake Kubernetes ingress certificate. Dead.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+  - host: https://dggs.geoinsight.ai
+    note: >-
+      The host apis.yml previously named as baseURL. Serves an nginx 404 on every path behind a fake
+      Kubernetes ingress certificate. Not the live API - see security/geoinsight-domain-security.yml.
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}

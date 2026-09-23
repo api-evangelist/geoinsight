@@ -1,0 +1,128 @@
+generated: '2026-08-20'
+method: derived
+status: candidate
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+name: GeoInsight MCP (candidate)
+description: >-
+  GeoInsight ships NO MCP server. This is a derived candidate tool set, computed from the 14 operations of
+  the published OGC API - DGGS contract, offered as a starting point - not a claim that any of it is
+  callable today. Every tool below names the operation it would wrap and the parameters that operation
+  really declares.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+  note: >-
+    Nobody ships a server. Probed POST tools/list against https://api.geoinsight.ai/mcp (404),
+    https://mcp.geoinsight.ai/mcp (404, nginx default backend behind a fake ingress certificate) and
+    https://dggs.io/api/mcp (404). No npm or PyPI MCP package exists under any geoinsight name and there
+    is no public GitHub organization. auth is unknown rather than none because the provider documents a
+    GPT/APK credential pair whose wire format is unpublished, even though reads currently answer
+    anonymously.
+probes:
+  - {url: 'https://api.geoinsight.ai/mcp', method: 'POST tools/list', status: 404}
+  - {url: 'https://mcp.geoinsight.ai/mcp', method: 'POST tools/list', status: 404}
+  - {url: 'https://dggs.io/api/mcp', method: 'POST tools/list', status: 404}
+  - {url: 'https://registry.npmjs.org/geoinsight', status: 404}
+server: null
+tools:
+  - name: get_service_root
+    description: Fetch the OGC API landing document with its discovery links and attribution.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /'
+    operation_id: root_handler
+    inputs: []
+  - name: list_collections
+    description: List every published data collection with title, description, spatial and temporal extent.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections'
+    operation_id: utoipa_doc
+    inputs: []
+  - name: get_collection
+    description: Fetch one collection's metadata, extent and links.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}'
+    operation_id: collection_id_utoipa_doc
+    inputs: [collection_id]
+  - name: list_dggrs
+    description: List the Discrete Global Grid Reference Systems the service supports.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /dggs'
+    operation_id: utoipa_doc
+    inputs: []
+  - name: get_dggrs
+    description: Fetch one DGGRS definition including default depth, max refinement level and max relative depth.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /dggs/{dggrs_id}'
+    operation_id: dggrs_id_utoipa_doc
+    inputs: [dggrs_id]
+  - name: list_collection_dggrs
+    description: List the DGGRS available for a specific collection.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs'
+    operation_id: collection_id_utoipa_doc
+    inputs: [collection_id]
+  - name: get_collection_dggrs
+    description: Fetch a DGGRS definition in the context of one collection.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}'
+    operation_id: collection_id_dggrs_id_utoipa_doc
+    inputs: [collection_id, dggrs_id]
+  - name: list_zones
+    description: List zones of a DGGRS.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /dggs/{dggrs_id}/zones'
+    operation_id: dggrs_id_utoipa_doc
+    inputs: [dggrs_id, refined-geometry]
+  - name: get_zone
+    description: Fetch one zone's geometry, centroid, bbox, level, area and statistics.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /dggs/{dggrs_id}/zones/{zone_id}'
+    operation_id: dggrs_id_zone_id_utoipa_doc
+    inputs: [dggrs_id, zone_id, refined-geometry]
+  - name: list_collection_zones
+    description: List zones of a DGGRS scoped to one collection.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}/zones'
+    operation_id: collection_id_dggrs_id_utoipa_doc
+    inputs: [collection_id, dggrs_id, refined-geometry]
+  - name: get_collection_zone
+    description: Fetch one zone in the context of one collection.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}'
+    operation_id: collection_id_dggrs_id_zone_id_utoipa_doc
+    inputs: [collection_id, dggrs_id, zone_id, refined-geometry]
+  - name: get_zone_data
+    description: >-
+      The core Spatial Token retrieval. Return one collection's values aggregated onto one zone at one or
+      more relative depths, with optional COG raster statistics and STAC search strategy.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data'
+    operation_id: collection_id_dggrs_id_zone_id_data_utoipa_doc
+    inputs:
+      [collection_id, dggrs_id, zone_id, f, zone-depth, datetime, properties, exclude-properties,
+       refined-geometry, cog-url, cog-stat, cog-band, cog-no-data-value, cog-sampling-factor,
+       cog-all-touched, stac-search-strategy, intersection_percent, cloud_cover_percent]
+  - name: search_collection_items
+    description: >-
+      Query a collection's GeoParquet lake as OGC API - Features, with bbox, datetime and CQL2 filtering
+      and limit/offset paging.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items'
+    operation_id: items_utoipa_doc
+    inputs: [collection_id, limit, offset, bbox, datetime, properties, exclude-properties, filter, filter-lang, f]
+  - name: get_collection_item
+    description: Fetch one feature by its 0-based row offset in the collection's parquet lake.
+    source_operation: 'openapi/geoinsight-ogc-api-dggs-openapi.yml#GET /collections/{collection_id}/items/{feature_id}'
+    operation_id: item_id_utoipa_doc
+    inputs: [collection_id, feature_id, bbox, datetime, properties, exclude-properties, filter, filter-lang, f]
+blockers:
+  - >-
+      operationId is not unique in the source contract - 14 operations share 10 ids, with four ids used
+      twice each. Any generated MCP server that keys tools on operationId will collide. The candidate tool
+      names above were assigned from the path and method instead, which is why several tools cite the same
+      operation_id.
+  - >-
+      No securityScheme in the contract, so a generated server has no credential to pass through even
+      though the provider documents a GPT/APK pair.
+  - >-
+      No rate-limit signal, so a server has nothing to back off on.
+pointer_policy:
+  emit_mcpserver_pointer: false
+  reason: >-
+    No `type: MCPServer` pointer is wired into apis.yml for this provider. The MCPServer pointer asserts
+    that the provider ships an MCP server, and GeoInsight does not - this file is a derived candidate, not
+    a discovered surface. Emitting the pointer would award the mcp_server_present ergonomics check and the
+    agent-readiness mcp_server dimension for something that does not exist. A `type: ToolCrosswalk`
+    pointer IS wired, because the crosswalk records a real, verifiable property of the published contract
+    (the operationId collisions that block automated tool binding).

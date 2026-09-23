@@ -1,0 +1,86 @@
+generated: '2026-08-20'
+method: derived
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+probes:
+  - {url: 'https://geoinsight.ai/status', status: 404}
+  - {url: 'https://geoinsight.ai/sitemap.xml', status: 200, note: 'Site is three pages: /, /privacy/, /terms/'}
+  - {url: 'https://api.geoinsight.ai/api?f=json', status: 200}
+name: GeoInsight API Lifecycle
+description: >-
+  GeoInsight publishes no versioning policy, no deprecation policy, no SLA and no status page. The only
+  version signal anywhere is info.version in the OpenAPI, which is not reachable from any URL, header or
+  media type, so a consumer has no way to pin a version or to be told one changed. The company's public
+  web surface is three pages (home, terms, privacy) and there is no changelog, blog or release feed on any
+  host.
+versioning:
+  scheme: none
+  current: '3.0.0'
+  source: 'openapi/geoinsight-ogc-api-dggs-openapi.yml info.version'
+  in_path: false
+  in_header: false
+  in_media_type: false
+  policy_url: null
+  detail: >-
+    No /v1 or /v3 path segment, no API-Version request or response header, no versioned media type. The
+    contract's declared version 3.0.0 is not addressable by a client. Note the potential for confusion:
+    OGC API - DGGS Part 1 is at version 1.0 and OpenAPI at 3.1.0, so a bare "3.0.0" is ambiguous even to a
+    reader who finds it.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  detail: >-
+    No operation in the contract carries deprecated: true, and no Sunset or Deprecation response header
+    was observed. That is consistent with a young API rather than a stable one - there is no evidence of a
+    deprecation practice either way. No Deprecation pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  detail: No service level agreement, uptime target or support-response commitment published on any host.
+status_page: null
+status_page_detail: >-
+  No status page found. https://geoinsight.ai/status returns 404, there is no status.geoinsight.ai, and no
+  third-party status host (Statuspage, Instatus, Better Stack) is linked from any GeoInsight surface. No
+  StatusPage pointer is emitted. This matters more than usual here: three failure modes were observed
+  live during this pass (500 on /conformance, 500 on a malformed zone id, 502 on a zone listing) and a
+  consumer has nowhere to check whether they are known.
+changelog: null
+changelog_detail: >-
+  No API changelog or release notes. The only dated release history GeoInsight publishes anywhere is the
+  PyPI history of the geoinsight Python package - 13 releases between 2023-05-05 and 2024-04-16, then
+  nothing. That is SDK history, not API history, and it is recorded in
+  packages/geoinsight-packages.yml rather than wired as a ChangeLog pointer.
+maturity_signals:
+  - signal: contract-served-live
+    positive: true
+    detail: The OpenAPI is served from the API host under the OGC rel=service-desc relation, not from a docs site.
+  - signal: real-data-catalogue
+    positive: true
+    detail: >-
+      22 collections are live and answering, spanning Sentinel-2 L2A, Landsat ARD, RADARSAT Constellation,
+      Overture administrative boundaries, AIS vessel positions, building footprints and a Canadian DEM.
+  - signal: placeholder-artifacts-in-production
+    positive: false
+    detail: >-
+      The service root advertises its conformance declaration at www.example.com. DGGRS records return
+      empty title, description, uri and crs strings. info.title is the internal name "oda" and
+      info.license.name is an empty string. These are unfinished-deployment markers on a live endpoint.
+  - signal: infrastructure-drift
+    positive: false
+    detail: >-
+      Three of the six GeoInsight hosts (dggs.geoinsight.ai, docs.geoinsight.ai, dashboard.geoinsight.ai)
+      present a default Kubernetes ingress certificate and 404 on every path. Two of them are named in the
+      provider's own published material - the API root attributes to docs.geoinsight.ai, and the PyPI
+      package sends users to dashboard.geoinsight.ai for credentials.
+  - signal: sdk-decay
+    positive: false
+    detail: >-
+      The sole first-party SDK last shipped 2024-04-16 and predates the current API surface.
+gaps:
+  - No versioning policy and no addressable version.
+  - No deprecation or sunset policy.
+  - No status page or incident communication channel.
+  - No changelog or release notes for the API.
+  - No SLA or uptime commitment.

@@ -5,10 +5,6 @@ info:
   license:
     name: ''
   version: 3.0.0
-  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
-servers:
-- url: https://api.geoinsight.ai
-  description: GeoInsight OGC API - DGGS production endpoint
 tags:
 - name: DGGS
 paths:
@@ -34,6 +30,8 @@ paths:
             text/html:
               schema:
                 type: string
+      summary: Collection id utoipa doc
+      x-summary-source: derived
   /dggs:
     get:
       tags:
@@ -49,40 +47,10 @@ paths:
             text/html:
               schema:
                 type: string
+      summary: Utoipa doc
+      x-summary-source: derived
 components:
   schemas:
-    DggrsId:
-      type: object
-      required:
-      - id
-      - title
-      - uri
-      - links
-      properties:
-        id:
-          type: string
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        title:
-          type: string
-        uri:
-          type: string
-    DggsResponse:
-      type: object
-      required:
-      - links
-      - dggrs
-      properties:
-        dggrs:
-          type: array
-          items:
-            $ref: '#/components/schemas/DggrsId'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
     Link:
       type: object
       required:
@@ -110,3 +78,35 @@ components:
           type:
           - string
           - 'null'
+    DggsResponse:
+      type: object
+      required:
+      - links
+      - dggrs
+      properties:
+        dggrs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DggrsId'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    DggrsId:
+      type: object
+      required:
+      - id
+      - title
+      - uri
+      - links
+      properties:
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type: string
+        uri:
+          type: string

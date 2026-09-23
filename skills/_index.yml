@@ -1,0 +1,33 @@
+generated: '2026-08-20'
+method: generated
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+description: >-
+  Three packaged Agent Skills for the GeoInsight OGC API - DGGS, generated from the live contract. Every
+  step names a real path and a real operationId verified against
+  openapi/geoinsight-ogc-api-dggs-openapi.yml, and every parameter, default and limit quoted is taken
+  verbatim from the spec or from a recorded live probe. GeoInsight publishes no skills or AGENTS.md of its
+  own; a search of geoinsight.ai, dggs.io and PyPI found none.
+skills:
+  - file: geoinsight-discover-collections-and-grids.md
+    name: Discover GeoInsight collections and grids
+    api: openapi/geoinsight-ogc-api-dggs-openapi.yml
+    operations: [root_handler, utoipa_doc, collection_id_utoipa_doc, dggrs_id_utoipa_doc]
+    summary: >-
+      Enumerate the 22 collections and 5 DGGRS before any zone query, because neither identifier is
+      enumerated in the contract.
+  - file: geoinsight-fetch-spatial-token.md
+    name: Fetch a GeoInsight Spatial Token for a zone
+    api: openapi/geoinsight-ogc-api-dggs-openapi.yml
+    operations:
+      [collection_id_dggrs_id_zone_id_data_utoipa_doc, collection_id_dggrs_id_zone_id_utoipa_doc,
+       dggrs_id_zone_id_utoipa_doc]
+    summary: >-
+      The core product flow - resolve an area to a zone, then retrieve one collection's values aggregated
+      onto it, with COG statistics and STAC search strategy control.
+  - file: geoinsight-query-features-with-cql2.md
+    name: Query a GeoInsight collection with CQL2
+    api: openapi/geoinsight-ogc-api-dggs-openapi.yml
+    operations: [items_utoipa_doc, item_id_utoipa_doc]
+    summary: >-
+      Search the GeoParquet lake through the OGC API - Features surface with CQL2, bbox and datetime
+      filters, and page correctly without rel=next links.

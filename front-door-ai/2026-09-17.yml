@@ -1,0 +1,27 @@
+# Front Door AI Index — geoinsight — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: geoinsight
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: geoinsight.ai
+  final_host: geoinsight.ai
+  ownership: own
+  owner: geoinsight
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 9
+  host_score: 9
+  density: 11.63
+  words: 774
+  tiers:
+    agentic: 0
+    core: 9
+    model: 0
+  ambiguous: 3
+  top_terms:
+    AI: 8
+    intelligence: 3
+    foundation model: 1

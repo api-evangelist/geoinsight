@@ -1,0 +1,40 @@
+generated: '2026-08-20'
+method: searched
+source: https://pypi.org/pypi/geoinsight/json
+name: GeoInsight Client Libraries
+description: >-
+  One first-party client library. GeoInsight publishes a Python package to PyPI under the name
+  `geoinsight`, authored from info@geoinsight.ai, which wraps the API endpoints in Python functions and
+  ships a `util` helper class for converting responses into GeoPandas dataframes. No JavaScript, Java,
+  .NET, Go, Ruby, PHP or Rust client was found on any registry, and GeoInsight publishes no public GitHub
+  organization, so there is no source repository to read the library against.
+registries_probed:
+  - {registry: pypi, query: geoinsight, status: 200, found: true}
+  - {registry: pypi, query: geoinsight-sdk, status: 404, found: false}
+  - {registry: pypi, query: geoinsight-ai, status: 404, found: false}
+  - {registry: npm, query: geoinsight, status: 404, found: false}
+  - {registry: github, query: 'orgs: geoinsight, geoinsight-ai, GeoInsight-AI', status: 404, found: false}
+packages:
+  - language: python
+    registry: pypi
+    name: geoinsight
+    url: https://pypi.org/project/geoinsight/
+    install: pip install geoinsight
+    official: true
+    version: 0.8.1
+    published: '2024-04-16'
+    license: MIT
+    author_email: GeoInsight <info@geoinsight.ai>
+    dependencies: [auth0-python>=4.4.2, geopandas>=0.14.0, pandas>=2.1.1, requests>=2.31.0, shapely>=2.0.1]
+    release_count: 13
+    first_published: '2023-05-05'
+    source_repository: null
+    note: >-
+      DECAY SIGNAL. The only first-party SDK GeoInsight ships was last released 2024-04-16 (v0.8.1),
+      more than two years before this probe. The OGC API - DGGS contract now live at api.geoinsight.ai
+      declares info.version 3.0.0 and exposes DGGS routes (/collections/{id}/dggs/{dggrs_id}/zones/
+      {zone_id}/data with COG and STAC parameters) that postdate the package. The package's own README
+      still directs users to dashboard.geoinsight.ai to obtain a GeoInsight Personal Token and API
+      Private Key, and that host currently returns an nginx 404 behind a fake Kubernetes ingress
+      certificate. The library's `auth0-python` dependency indicates the token issuance path is Auth0.
+      Treat the published SDK as predating the current API surface; it was not verified against it.

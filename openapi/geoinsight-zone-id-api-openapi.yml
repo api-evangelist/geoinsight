@@ -5,10 +5,6 @@ info:
   license:
     name: ''
   version: 3.0.0
-  x-apievangelist-note: Harvested verbatim from https://api.geoinsight.ai/api?f=json on 2026-08-20. info.title is the vendor internal name "oda"; the service self-identifies at its root document as "OGC DGGS API" with attribution to GeoInsight (https://docs.geoinsight.ai). servers[] was absent in the published document and was added by API Evangelist from the fetch host; nothing else was altered.
-servers:
-- url: https://api.geoinsight.ai
-  description: GeoInsight OGC API - DGGS production endpoint
 tags:
 - name: Zone ID
 paths:
@@ -55,6 +51,8 @@ paths:
             application/geo+json:
               schema:
                 type: string
+      summary: Collection id dggrs id zone id utoipa doc
+      x-summary-source: derived
   /dggs/{dggrs_id}/zones/{zone_id}:
     get:
       tags:
@@ -92,35 +90,10 @@ paths:
             application/geo+json:
               schema:
                 type: string
+      summary: Dggrs id zone id utoipa doc
+      x-summary-source: derived
 components:
   schemas:
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
     ZoneIdResponse:
       type: object
       required:
@@ -217,3 +190,30 @@ components:
           - number
           - 'null'
           format: double
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'

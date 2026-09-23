@@ -1,0 +1,208 @@
+generated: '2026-08-20'
+method: derived
+source: openapi/geoinsight-ogc-api-dggs-openapi.yml
+probes:
+  - {url: 'https://api.geoinsight.ai/', status: 200}
+  - {url: 'https://api.geoinsight.ai/api?f=json', status: 200}
+  - {url: 'https://api.geoinsight.ai/dggs?f=json', status: 200}
+  - {url: 'https://api.geoinsight.ai/collections?f=json', status: 200}
+  - {url: 'https://api.geoinsight.ai/conformance', status: 500}
+name: GeoInsight Standards Conformance
+description: >-
+  GeoInsight's API is a geospatial domain-standard implementation, not a bespoke REST surface. The
+  contract's own resource shape, link relations and identifiers are those of the OGC API family, and the
+  service root says so in its description. The one conformance claim that cannot be verified is the one
+  the standard requires most: /conformance returns HTTP 500.
+standards:
+  - id: ogc-api-common
+    name: 'OGC API - Common - Part 1 - Core'
+    conforms: true
+    evidence: >-
+      The service root document at https://api.geoinsight.ai/ carries description "API to access different
+      DGGRS's that conforms to the OGC API Common specification." and a links[] array using the registered
+      rel values self, alternate, service-desc and service-doc, plus the OGC rel URI
+      http://www.opengis.net/def/rel/ogc/1.0/conformance. The OpenAPI is advertised at /api via
+      rel=service-desc and rendered at /api?f=html via rel=service-doc.
+  - id: ogc-api-dggs-core
+    name: 'OGC API - Discrete Global Grid Systems - Part 1 - Core'
+    conforms: true
+    evidence: >-
+      The full DGGS path hierarchy is implemented: /dggs, /dggs/{dggrs_id}, /dggs/{dggrs_id}/zones,
+      /dggs/{dggrs_id}/zones/{zone_id}, and the collection-scoped mirror /collections/{collection_id}/dggs/
+      {dggrs_id}/zones/{zone_id}/data. Responses carry the DGGS vocabulary verbatim - DggrsIdResponse with
+      default_depth, max_refinement_level and max_relative_depth; ZonesResponse with linkTemplates and
+      returnedAreaMetersSquare; ZoneIdResponse with level, areaMetersSquare, volumeMetersCube,
+      temporalIntervalSeconds and shapeType; DataResponse with dggrs, zoneId, depths, defaultDepth,
+      dimensions and schema. The zone-depth parameter implements relative-depth aggregation. Link relations
+      use the DGGS-specific [ogc-rel:dggrs-definition].
+  - id: ogc-api-features-core
+    name: 'OGC API - Features - Part 1 - Core'
+    conforms: partial
+    evidence: >-
+      /collections, /collections/{collection_id}, /collections/{collection_id}/items and
+      /collections/{collection_id}/items/{feature_id} are implemented with the Features parameter set
+      (limit, offset, bbox in CRS84, datetime as an RFC 3339 instant or interval) and the Features response
+      shape (FeatureCollectionResponse with type, timeStamp, numberMatched, numberReturned, features,
+      links). Marked partial rather than true because Features Core specifies a `startindex`-style paging
+      contract and requires a working /conformance declaration, which this service does not serve.
+  - id: ogc-api-features-part3-filtering
+    name: 'OGC API - Features - Part 3 - Filtering (CQL2)'
+    conforms: true
+    evidence: >-
+      /collections/{collection_id}/items accepts filter and filter-lang query parameters. The spec
+      documents filter as "CQL2 filter expression over the parquet columns, e.g. population > 10000 AND
+      name LIKE 'A%'" and filter-lang as "cql2-text (default) or cql2-json" - both registered CQL2
+      encodings.
+  - id: stac
+    name: SpatioTemporal Asset Catalog
+    conforms: partial
+    evidence: >-
+      Zone data retrieval accepts stac-search-strategy (single, latest, mosaic) and cloud_cover_percent,
+      which the spec describes as filtering on "eo:cloud_cover" - the STAC Electro-Optical extension field
+      name. GeoInsight consumes STAC upstream to resolve rasters; it does not expose a STAC API of its own,
+      so this is consumer-side conformance.
+  - id: cog
+    name: Cloud Optimized GeoTIFF
+    conforms: true
+    evidence: >-
+      The data operation exposes cog-url, cog-stat (count, valid, min, max, mean, median), cog-band,
+      cog-no-data-value, cog-sampling-factor and cog-all-touched, allowing an arbitrary COG to be
+      zonally summarised without registering a collection.
+  - id: geoparquet
+    name: GeoParquet
+    conforms: true
+    evidence: >-
+      geoparquet is an accepted value of the f parameter on both the items and zone-data operations, and
+      the items surface is documented as reading from a "lake parquet" with a RawItemsResponse carrying
+      files[] (FileInfo with file and rows) and columns[].
+  - id: geojson
+    name: 'GeoJSON (RFC 7946)'
+    conforms: true
+    evidence: >-
+      geojson is the default f value on /collections/{collection_id}/items, returning a
+      FeatureCollectionResponse whose members are Feature objects with type, id, geometry and properties.
+  - id: crs84
+    name: 'OGC CRS84 (WGS 84 longitude/latitude)'
+    conforms: true
+    evidence: The bbox parameter is documented as "min_x,min_y,max_x,max_y (CRS84 lon/lat)".
+  - id: rfc3339-datetime
+    name: 'RFC 3339 date and time'
+    conforms: true
+    evidence: >-
+      The datetime parameter on both items and zone-data accepts an RFC 3339 instant or an interval with
+      open-ended forms (start/.., ../end).
+  - id: h3
+    name: 'H3 hierarchical hexagonal geospatial indexing system'
+    conforms: true
+    evidence: >-
+      H3 is a registered DGGRS at /dggs/H3 with default_depth 4, max_refinement_level 16 and
+      max_relative_depth 6. A malformed zone id returns the H3 library's own diagnostic in the error hint
+      field ("H3o error: Invalid H3 zone ID"), confirming a real H3 implementation rather than a label.
+  - id: isea3h
+    name: 'ISEA3H (Icosahedral Snyder Equal Area aperture 3 Hexagon)'
+    conforms: true
+    evidence: >-
+      Registered twice at /dggs?f=json under two implementations, ISEA3HDGGRID and ISEA3HDGGAL, both
+      titled ISEA3H - i.e. the DGGRID and DGGAL reference implementations exposed side by side.
+  - id: igeo7
+    name: 'IGEO7 DGGRS'
+    conforms: true
+    evidence: Registered DGGRS id IGEO7 at /dggs?f=json.
+  - id: ivea3h
+    name: 'IVEA3H DGGRS'
+    conforms: true
+    evidence: Registered DGGRS id IVEA3H at /dggs?f=json.
+  - id: openapi-31
+    name: 'OpenAPI 3.1.0'
+    conforms: true
+    evidence: >-
+      https://api.geoinsight.ai/api?f=json returns a document declaring openapi 3.1.0 with 14 operations
+      and 28 component schemas, served under rel=service-desc from the service root.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Errors use a custom envelope (ApiError - code, message, hint, redirect_location) served as
+      application/json, not application/problem+json. See errors/geoinsight-problem-types.yml.
+  - id: oauth2
+    conforms: false
+    evidence: No oauth2 securityScheme is declared and no OAuth discovery document is served.
+  - id: oidc
+    conforms: false
+    evidence: >-
+      No /.well-known/openid-configuration on any host, although the official Python package depends on
+      auth0-python.
+  - id: idempotency
+    conforms: na
+    evidence: The API is read-only - 14 operations, all GET. There is no write to make idempotent.
+  - id: pagination
+    conforms: partial
+    evidence: >-
+      /collections/{collection_id}/items implements limit (default 10, max 1000) and offset with
+      numberMatched and numberReturned in the response body. No link-relation paging (rel=next/prev) and
+      no cursor. The DGGS zone operations expose no paging at all.
+domain_standard:
+  market: geospatial / earth observation
+  standard: 'OGC API - Discrete Global Grid Systems (DGGS) Part 1: Core'
+  declared_in_contract: true
+  evidence_location: >-
+    openapi/geoinsight-ogc-api-dggs-openapi.yml paths /dggs, /dggs/{dggrs_id}/zones/{zone_id} and
+    /collections/{collection_id}/dggs/{dggrs_id}/zones/{zone_id}/data; components.schemas DggrsIdResponse,
+    ZonesResponse, ZoneIdResponse, DataResponse; and the live link relation
+    "[ogc-rel:dggrs-definition]" plus the OGC conformance rel URI
+    http://www.opengis.net/def/rel/ogc/1.0/conformance in the service root document.
+  note: >-
+    This is a contract-level declaration, not a marketing claim. A client that already speaks OGC API -
+    DGGS can call this service with no bespoke connector: the paths, the DGGRS identifiers, the relative
+    depth model and the response member names are the standard's own.
+defects:
+  - id: conformance-endpoint-500
+    severity: high
+    finding: >-
+      GET https://api.geoinsight.ai/conformance returns HTTP 500 with the body "Requested application data
+      is not configured correctly. View/enable debug logs for more details." Both ?f=json and the bare path
+      fail identically.
+    impact: >-
+      OGC API - Common requires a conformance declaration, and it is the single machine-readable statement
+      of which conformance classes the service implements. Every conformance assertion in this file had to
+      be derived from the contract and observed behaviour instead of read from the service. No OGC client
+      that gates on /conformance can negotiate with this endpoint.
+  - id: placeholder-conformance-links
+    severity: medium
+    finding: >-
+      The service root document advertises its conformance declaration at
+      http://www.example.com/oapi-c/conformance?f=application/json and
+      http://www.example.com/oapi-c/conformance?f=text/html - unreplaced example.com placeholders, over
+      plain HTTP.
+    impact: A client following the advertised conformance link leaves the provider's domain entirely.
+  - id: no-declared-servers
+    severity: medium
+    finding: The published OpenAPI declares no servers[] block, so the document does not name its own host.
+    impact: >-
+      A generated client cannot resolve a base URL from the contract. API Evangelist added servers[] in
+      openapi/geoinsight-ogc-api-dggs-openapi.yml from the fetch host and recorded that in the overlay.
+  - id: empty-info-block
+    severity: low
+    finding: >-
+      info.title is "oda" (an internal service name), info.description is empty, and info.license.name is
+      an empty string. The service identifies itself correctly as "OGC DGGS API" with GeoInsight
+      attribution in its root document, but the OpenAPI does not.
+  - id: undeclared-tags
+    severity: low
+    finding: >-
+      Operations carry tags (root, Collections, Collection ID, DGGS, DGGRS ID, Zones, Zone ID, Data,
+      Items) but the document has no top-level tags[] array declaring or describing them.
+  - id: duplicate-operationids
+    severity: high
+    finding: >-
+      operationId values are not unique: 14 operations share only 10 distinct ids. Four ids are each used
+      twice - utoipa_doc (GET /collections and GET /dggs), collection_id_utoipa_doc
+      (GET /collections/{collection_id} and GET /collections/{collection_id}/dggs),
+      collection_id_dggrs_id_utoipa_doc (GET /collections/{collection_id}/dggs/{dggrs_id} and its /zones
+      child) and dggrs_id_utoipa_doc (GET /dggs/{dggrs_id} and GET /dggs/{dggrs_id}/zones). The names are
+      also leaked framework artifacts - utoipa is the Rust OpenAPI generator - rather than
+      intent-revealing identifiers.
+    impact: >-
+      OpenAPI requires operationId to be unique across the document. Code generators will collide or
+      silently drop operations, and no agent tool-binding can address the four colliding pairs by id.
+      This is the single largest obstacle to making the API agent-callable, and it is a generator
+      configuration fix rather than an API change.

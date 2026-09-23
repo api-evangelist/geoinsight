@@ -1,0 +1,89 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for GeoInsight OGC API - DGGS
+  version: 1.0.0
+x-generated: '2026-08-20'
+x-method: generated
+x-source: >-
+  Enhancements applied by API Evangelist over the verbatim document harvested from
+  https://api.geoinsight.ai/api?f=json on 2026-08-20 and preserved at
+  openapi/_original/geoinsight-ogc-api-dggs-openapi-original.json. This overlay is the complete,
+  reversible record of every difference between that original and
+  openapi/geoinsight-ogc-api-dggs-openapi.yml.
+extends: openapi/_original/geoinsight-ogc-api-dggs-openapi-original.json
+actions:
+  - target: $
+    description: >-
+      The published document declares no servers[]. The live host was established by fetching the document
+      itself from https://api.geoinsight.ai/api?f=json under the OGC rel=service-desc link advertised by
+      the service root at https://api.geoinsight.ai/. Without this a generated client has no base URL.
+    update:
+      servers:
+        - url: https://api.geoinsight.ai
+          description: GeoInsight OGC API - DGGS production endpoint
+  - target: $.info
+    description: >-
+      Identity repair, recorded as extensions rather than by overwriting the provider's own fields.
+      info.title is the vendor's internal service name "oda"; the service self-identifies as "OGC DGGS
+      API" with attribution to GeoInsight in its root document. info.description and info.license.name
+      are empty strings in the original.
+    update:
+      x-apievangelist-service-title: OGC DGGS API
+      x-apievangelist-provider: GeoInsight GmbH
+      x-apievangelist-attribution-source: 'https://api.geoinsight.ai/ (root document attribution field)'
+      x-apievangelist-rating-note: >-
+        info.title "oda" is an internal name, info.description is empty and info.license.name is an empty
+        string in the document as published.
+  - target: $
+    description: >-
+      The document uses nine tags across its operations but declares none of them at the top level, so no
+      tooling can render or describe the resource families.
+    update:
+      x-apievangelist-undeclared-tags:
+        - {name: root, description: Service landing page and discovery links}
+        - {name: Collections, description: The published data collection catalogue}
+        - {name: Collection ID, description: A single collection's metadata and extent}
+        - {name: DGGS, description: Discrete Global Grid Reference System registry}
+        - {name: DGGRS ID, description: A single DGGRS definition}
+        - {name: Zones, description: Zone discovery within a DGGRS}
+        - {name: Zone ID, description: A single zone's geometry and statistics}
+        - {name: Data, description: Zone data retrieval - the Spatial Token payload}
+        - {name: Items, description: OGC API - Features surface over the GeoParquet lake}
+  - target: $
+    description: >-
+      Records the operationId collisions found in the published document so downstream tooling can see why
+      operations had to be bound by path. Four ids are each used by two operations.
+    update:
+      x-apievangelist-operationid-collisions:
+        - {id: utoipa_doc, paths: ['GET /collections', 'GET /dggs']}
+        - {id: collection_id_utoipa_doc, paths: ['GET /collections/{collection_id}', 'GET /collections/{collection_id}/dggs']}
+        - {id: collection_id_dggrs_id_utoipa_doc, paths: ['GET /collections/{collection_id}/dggs/{dggrs_id}', 'GET /collections/{collection_id}/dggs/{dggrs_id}/zones']}
+        - {id: dggrs_id_utoipa_doc, paths: ['GET /dggs/{dggrs_id}', 'GET /dggs/{dggrs_id}/zones']}
+  - target: $
+    description: >-
+      Records the DGGRS registry observed live, which the contract does not enumerate - dggrs_id is typed
+      as a bare string with no enum, so a client cannot discover the valid values from the contract alone.
+    update:
+      x-apievangelist-live-dggrs:
+        source: 'https://api.geoinsight.ai/dggs?f=json'
+        observed: '2026-08-20'
+        values: [ISEA3HDGGRID, IGEO7, H3, ISEA3HDGGAL, IVEA3H]
+  - target: $
+    description: >-
+      Records the collection catalogue observed live, for the same reason - collection_id is a bare string
+      with no enum.
+    update:
+      x-apievangelist-live-collections:
+        source: 'https://api.geoinsight.ai/collections?f=json'
+        observed: '2026-08-20'
+        count: 22
+  - target: $
+    description: >-
+      Records failure modes observed live that the contract does not declare, so a client generated from
+      this document is not surprised by them.
+    update:
+      x-apievangelist-undeclared-failures:
+        - {status: 500, path: /conformance, note: 'OGC-required conformance declaration fails; body is plain text, not the ApiError envelope'}
+        - {status: 500, path: '/collections/{collection_id}/dggs/{dggrs_id}/zones', note: 'Malformed zone id returns 500 rather than the declared 422'}
+        - {status: 502, path: '/collections/{collection_id}/dggs/{dggrs_id}/zones', note: 'Unbounded zone listing returns an nginx 502; the zone routes accept no limit parameter'}
+        - {status: 404, method: HEAD, path: /, note: 'HEAD is unsupported on the landing page while GET returns 200'}
