@@ -45,18 +45,19 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/Temporal'
-    Temporal:
+    Spatial:
       type: object
       properties:
-        interval:
+        bbox:
           type:
           - array
           - 'null'
           items:
             type: array
             items:
-              type: string
-        trs:
+              type: number
+              format: double
+        crs:
           type:
           - string
           - 'null'
@@ -84,6 +85,21 @@ components:
           - string
           - 'null'
         type:
+          type:
+          - string
+          - 'null'
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
           type:
           - string
           - 'null'
@@ -122,22 +138,6 @@ components:
           items:
             $ref: '#/components/schemas/Link'
         title:
-          type:
-          - string
-          - 'null'
-    Spatial:
-      type: object
-      properties:
-        bbox:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: number
-              format: double
-        crs:
           type:
           - string
           - 'null'

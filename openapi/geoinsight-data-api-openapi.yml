@@ -158,49 +158,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    NumStr:
-      oneOf:
-      - type: object
-        required:
-        - U8
-        properties:
-          U8:
-            type: integer
-            format: int32
-            minimum: 0
-      - type: object
-        required:
-        - String
-        properties:
-          String:
-            type: string
-    ApiError:
-      type: object
-      description: API error response body for JSON error messages.
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
-          type:
-          - string
-          - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
-          type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
     Dimension:
       type: object
       required:
@@ -227,33 +184,6 @@ components:
           - string
           - 'null'
         unitLang:
-          type:
-          - string
-          - 'null'
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
           type:
           - string
           - 'null'
@@ -293,6 +223,117 @@ components:
           - $ref: '#/components/schemas/Schema'
         zoneId:
           type: string
+    Schema:
+      type: object
+      required:
+      - type
+      - properties
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string
+        required:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        type:
+          $ref: '#/components/schemas/SchemaType'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    Grid:
+      type: object
+      required:
+      - cellsCount
+      properties:
+        boundCoordinates:
+          type:
+          - array
+          - 'null'
+          items:
+            oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/NumStr'
+        cellsCount:
+          type: integer
+          format: int32
+          minimum: 0
+        coordinates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NumStr'
+        firstCoordinate:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/NumStr'
+        relativeBounds:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NumStr'
+        resolution:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/NumStr'
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
     SchemaProperty:
       type: object
       properties:
@@ -373,6 +414,10 @@ components:
           type:
           - string
           - 'null'
+    SchemaType:
+      type: string
+      enum:
+      - object
     PropertyType:
       type: string
       enum:
@@ -383,64 +428,19 @@ components:
       - number
       - object
       - string
-    Grid:
-      type: object
-      required:
-      - cellsCount
-      properties:
-        boundCoordinates:
-          type:
-          - array
-          - 'null'
-          items:
-            oneOf:
-            - type: 'null'
-            - $ref: '#/components/schemas/NumStr'
-        cellsCount:
-          type: integer
-          format: int32
-          minimum: 0
-        coordinates:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NumStr'
-        firstCoordinate:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/NumStr'
-        relativeBounds:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NumStr'
-        resolution:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/NumStr'
-    SchemaType:
-      type: string
-      enum:
-      - object
-    Schema:
-      type: object
-      required:
-      - type
-      - properties
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/SchemaProperty'
-          propertyNames:
-            type: string
+    NumStr:
+      oneOf:
+      - type: object
         required:
-          type:
-          - array
-          - 'null'
-          items:
+        - U8
+        properties:
+          U8:
+            type: integer
+            format: int32
+            minimum: 0
+      - type: object
+        required:
+        - String
+        properties:
+          String:
             type: string
-        type:
-          $ref: '#/components/schemas/SchemaType'

@@ -38,6 +38,78 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/Temporal'
+    Spatial:
+      type: object
+      properties:
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+        crs:
+          type:
+          - string
+          - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    CollectionsResponse:
+      type: object
+      required:
+      - links
+      - collections
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionId'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
     CollectionId:
       type: object
       required:
@@ -73,78 +145,6 @@ components:
           items:
             $ref: '#/components/schemas/Link'
         title:
-          type:
-          - string
-          - 'null'
-    CollectionsResponse:
-      type: object
-      required:
-      - links
-      - collections
-      properties:
-        collections:
-          type: array
-          items:
-            $ref: '#/components/schemas/CollectionId'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-    Temporal:
-      type: object
-      properties:
-        interval:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: string
-        trs:
-          type:
-          - string
-          - 'null'
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    Spatial:
-      type: object
-      properties:
-        bbox:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: number
-              format: double
-        crs:
           type:
           - string
           - 'null'

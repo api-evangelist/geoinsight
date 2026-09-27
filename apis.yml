@@ -51,7 +51,7 @@ tags:
 - Spatial Data
 - GIS
 - Artificial Intelligence
-- Machine-Learning
+- Machine Learning
 - Analysis-ready data
 - Spatial Tokens
 - Sentinel-2
@@ -78,6 +78,7 @@ tags_raw:
 - STAC
 - GeoParquet
 - H3
+- Machine-Learning
 apis:
 - aid: geoinsight:geoinsight-collection-id-api
   name: GeoInsight Collection ID API

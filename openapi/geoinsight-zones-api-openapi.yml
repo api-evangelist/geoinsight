@@ -133,19 +133,6 @@ components:
           type:
           - string
           - 'null'
-    LinkTemplate:
-      type: object
-      required:
-      - rel
-      - title
-      - uriTemplate
-      properties:
-        rel:
-          type: string
-        title:
-          type: string
-        uriTemplate:
-          type: string
     Link:
       type: object
       required:
@@ -173,6 +160,19 @@ components:
           type:
           - string
           - 'null'
+    LinkTemplate:
+      type: object
+      required:
+      - rel
+      - title
+      - uriTemplate
+      properties:
+        rel:
+          type: string
+        title:
+          type: string
+        uriTemplate:
+          type: string
     ZonesResponse:
       type: object
       required:
