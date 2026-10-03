@@ -65,24 +65,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Link'
-    DggrsId:
-      type: object
-      required:
-      - id
-      - title
-      - uri
-      - links
-      properties:
-        id:
-          type: string
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        title:
-          type: string
-        uri:
-          type: string
     Link:
       type: object
       required:
@@ -110,3 +92,21 @@ components:
           type:
           - string
           - 'null'
+    DggrsId:
+      type: object
+      required:
+      - id
+      - title
+      - uri
+      - links
+      properties:
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type: string
+        uri:
+          type: string

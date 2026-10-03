@@ -205,6 +205,35 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    FeatureCollectionResponse:
+      type: object
+      description: OGC API Features `getFeatures` response over the collection's lake parquet.
+      required:
+      - type
+      - timeStamp
+      - numberMatched
+      - numberReturned
+      - features
+      - links
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureResponse'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        numberReturned:
+          type: integer
+          minimum: 0
+        timeStamp:
+          type: string
+        type:
+          type: string
     Link:
       type: object
       required:
@@ -232,18 +261,32 @@ components:
           type:
           - string
           - 'null'
-    FileInfo:
+    FeatureResponse:
       type: object
-      description: One parquet file under the collection's lake data prefix with its row count.
+      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
+
+        row index in glob scan order (the raw parquet carries no guaranteed id
+
+        column) — only stable while the lake prefix doesn''t change.'
       required:
-      - file
-      - rows
+      - type
+      - id
+      - geometry
+      - properties
       properties:
-        file:
-          type: string
-        rows:
+        geometry:
+          type: object
+        id:
           type: integer
-          format: int64
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        properties:
+          type: object
+        type:
+          type: string
     ApiError:
       type: object
       description: API error response body for JSON error messages.
@@ -271,6 +314,18 @@ components:
           type:
           - string
           - 'null'
+    FileInfo:
+      type: object
+      description: One parquet file under the collection's lake data prefix with its row count.
+      required:
+      - file
+      - rows
+      properties:
+        file:
+          type: string
+        rows:
+          type: integer
+          format: int64
     RawItemResponse:
       type: object
       description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
@@ -351,58 +406,3 @@ components:
         source:
           type: string
           description: The `read_parquet` glob the rows were read from.
-    FeatureCollectionResponse:
-      type: object
-      description: OGC API Features `getFeatures` response over the collection's lake parquet.
-      required:
-      - type
-      - timeStamp
-      - numberMatched
-      - numberReturned
-      - features
-      - links
-      properties:
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureResponse'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
-          type: integer
-          format: int64
-        numberReturned:
-          type: integer
-          minimum: 0
-        timeStamp:
-          type: string
-        type:
-          type: string
-    FeatureResponse:
-      type: object
-      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
-
-        row index in glob scan order (the raw parquet carries no guaranteed id
-
-        column) — only stable while the lake prefix doesn''t change.'
-      required:
-      - type
-      - id
-      - geometry
-      - properties
-      properties:
-        geometry:
-          type: object
-        id:
-          type: integer
-          minimum: 0
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        properties:
-          type: object
-        type:
-          type: string
