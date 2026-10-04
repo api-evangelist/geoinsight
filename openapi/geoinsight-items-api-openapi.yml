@@ -205,59 +205,30 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    FeatureCollectionResponse:
+    ApiError:
       type: object
-      description: OGC API Features `getFeatures` response over the collection's lake parquet.
+      description: API error response body for JSON error messages.
       required:
-      - type
-      - timeStamp
-      - numberMatched
-      - numberReturned
-      - features
-      - links
+      - code
+      - message
       properties:
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeatureResponse'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
+        code:
           type: integer
-          format: int64
-        numberReturned:
-          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
           minimum: 0
-        timeStamp:
-          type: string
-        type:
-          type: string
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
+        hint:
           type:
           - string
           - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
           type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
           type:
           - string
           - 'null'
@@ -287,73 +258,33 @@ components:
           type: object
         type:
           type: string
-    ApiError:
+    Link:
       type: object
-      description: API error response body for JSON error messages.
       required:
-      - code
-      - message
+      - href
+      - rel
       properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
+        href:
+          type: string
+        hreflang:
           type:
           - string
           - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
           type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
+        title:
           type:
           - string
           - 'null'
-    FileInfo:
-      type: object
-      description: One parquet file under the collection's lake data prefix with its row count.
-      required:
-      - file
-      - rows
-      properties:
-        file:
-          type: string
-        rows:
-          type: integer
-          format: int64
-    RawItemResponse:
-      type: object
-      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
-      required:
-      - collection
-      - source
-      - numberMatched
-      - feature_id
-      - item
-      - links
-      properties:
-        collection:
-          type: string
-        feature_id:
-          type: integer
-          minimum: 0
-        item:
-          type: object
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
-          type: integer
-          format: int64
-        source:
-          type: string
-          description: The `read_parquet` glob the row was read from.
+        type:
+          type:
+          - string
+          - 'null'
     RawItemsResponse:
       type: object
       description: 'Raw inspection view (`f=json`): rows exactly as they sit in the lake
@@ -406,3 +337,72 @@ components:
         source:
           type: string
           description: The `read_parquet` glob the rows were read from.
+    FileInfo:
+      type: object
+      description: One parquet file under the collection's lake data prefix with its row count.
+      required:
+      - file
+      - rows
+      properties:
+        file:
+          type: string
+        rows:
+          type: integer
+          format: int64
+    RawItemResponse:
+      type: object
+      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
+      required:
+      - collection
+      - source
+      - numberMatched
+      - feature_id
+      - item
+      - links
+      properties:
+        collection:
+          type: string
+        feature_id:
+          type: integer
+          minimum: 0
+        item:
+          type: object
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        source:
+          type: string
+          description: The `read_parquet` glob the row was read from.
+    FeatureCollectionResponse:
+      type: object
+      description: OGC API Features `getFeatures` response over the collection's lake parquet.
+      required:
+      - type
+      - timeStamp
+      - numberMatched
+      - numberReturned
+      - features
+      - links
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeatureResponse'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        numberReturned:
+          type: integer
+          minimum: 0
+        timeStamp:
+          type: string
+        type:
+          type: string

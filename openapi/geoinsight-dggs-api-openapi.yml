@@ -51,20 +51,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    DggsResponse:
-      type: object
-      required:
-      - links
-      - dggrs
-      properties:
-        dggrs:
-          type: array
-          items:
-            $ref: '#/components/schemas/DggrsId'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
     Link:
       type: object
       required:
@@ -92,6 +78,20 @@ components:
           type:
           - string
           - 'null'
+    DggsResponse:
+      type: object
+      required:
+      - links
+      - dggrs
+      properties:
+        dggrs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DggrsId'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
     DggrsId:
       type: object
       required:

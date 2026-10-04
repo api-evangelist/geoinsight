@@ -106,6 +106,42 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ZonesResponse:
+      type: object
+      required:
+      - zones
+      - links
+      properties:
+        linkTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTemplate'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        returnedAreaMetersSquare:
+          type:
+          - number
+          - 'null'
+          format: double
+        zones:
+          type: array
+          items:
+            type: string
+    LinkTemplate:
+      type: object
+      required:
+      - rel
+      - title
+      - uriTemplate
+      properties:
+        rel:
+          type: string
+        title:
+          type: string
+        uriTemplate:
+          type: string
     ApiError:
       type: object
       description: API error response body for JSON error messages.
@@ -133,19 +169,6 @@ components:
           type:
           - string
           - 'null'
-    LinkTemplate:
-      type: object
-      required:
-      - rel
-      - title
-      - uriTemplate
-      properties:
-        rel:
-          type: string
-        title:
-          type: string
-        uriTemplate:
-          type: string
     Link:
       type: object
       required:
@@ -173,26 +196,3 @@ components:
           type:
           - string
           - 'null'
-    ZonesResponse:
-      type: object
-      required:
-      - zones
-      - links
-      properties:
-        linkTemplates:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkTemplate'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        returnedAreaMetersSquare:
-          type:
-          - number
-          - 'null'
-          format: double
-        zones:
-          type: array
-          items:
-            type: string

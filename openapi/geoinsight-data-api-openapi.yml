@@ -158,42 +158,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    DataResponse:
-      type: object
-      required:
-      - dggrs
-      - zoneId
-      - depths
-      - links
-      properties:
-        defaultDepth:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        depths:
-          type: array
-          items:
-            type: integer
-            format: int32
-        dggrs:
-          type: string
-        dimensions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Dimension'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        schema:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Schema'
-        zoneId:
-          type: string
     SchemaProperty:
       type: object
       properties:
@@ -274,10 +238,6 @@ components:
           type:
           - string
           - 'null'
-    SchemaType:
-      type: string
-      enum:
-      - object
     ApiError:
       type: object
       description: API error response body for JSON error messages.
@@ -305,6 +265,119 @@ components:
           type:
           - string
           - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    DataResponse:
+      type: object
+      required:
+      - dggrs
+      - zoneId
+      - depths
+      - links
+      properties:
+        defaultDepth:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        depths:
+          type: array
+          items:
+            type: integer
+            format: int32
+        dggrs:
+          type: string
+        dimensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Dimension'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        schema:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Schema'
+        zoneId:
+          type: string
+    NumStr:
+      oneOf:
+      - type: object
+        required:
+        - U8
+        properties:
+          U8:
+            type: integer
+            format: int32
+            minimum: 0
+      - type: object
+        required:
+        - String
+        properties:
+          String:
+            type: string
+    SchemaType:
+      type: string
+      enum:
+      - object
+    Schema:
+      type: object
+      required:
+      - type
+      - properties
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string
+        required:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        type:
+          $ref: '#/components/schemas/SchemaType'
+    PropertyType:
+      type: string
+      enum:
+      - array
+      - boolean
+      - integer
+      - 'null'
+      - number
+      - object
+      - string
     Grid:
       type: object
       required:
@@ -371,76 +444,3 @@ components:
           type:
           - string
           - 'null'
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    PropertyType:
-      type: string
-      enum:
-      - array
-      - boolean
-      - integer
-      - 'null'
-      - number
-      - object
-      - string
-    NumStr:
-      oneOf:
-      - type: object
-        required:
-        - U8
-        properties:
-          U8:
-            type: integer
-            format: int32
-            minimum: 0
-      - type: object
-        required:
-        - String
-        properties:
-          String:
-            type: string
-    Schema:
-      type: object
-      required:
-      - type
-      - properties
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/SchemaProperty'
-          propertyNames:
-            type: string
-        required:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        type:
-          $ref: '#/components/schemas/SchemaType'

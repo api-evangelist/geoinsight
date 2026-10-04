@@ -94,6 +94,56 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ValueItem:
+      type: object
+      properties:
+        average:
+          type:
+          - number
+          - 'null'
+          format: double
+        maximum:
+          type:
+          - number
+          - 'null'
+          format: double
+        minimum:
+          type:
+          - number
+          - 'null'
+          format: double
+        stdDev:
+          type:
+          - number
+          - 'null'
+          format: double
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
     ZoneIdResponse:
       type: object
       required:
@@ -163,56 +213,6 @@ components:
           items:
             type: string
         volumeMetersCube:
-          type:
-          - number
-          - 'null'
-          format: double
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    ValueItem:
-      type: object
-      properties:
-        average:
-          type:
-          - number
-          - 'null'
-          format: double
-        maximum:
-          type:
-          - number
-          - 'null'
-          format: double
-        minimum:
-          type:
-          - number
-          - 'null'
-          format: double
-        stdDev:
           type:
           - number
           - 'null'

@@ -34,52 +34,18 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Extent:
+    Temporal:
       type: object
       properties:
-        spatial:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Spatial'
-        temporal:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Temporal'
-    CollectionIdResponse:
-      type: object
-      required:
-      - id
-      - links
-      properties:
-        attribution:
-          type:
-          - string
-          - 'null'
-        crs:
+        interval:
           type:
           - array
           - 'null'
           items:
-            type: string
-        description:
-          type:
-          - string
-          - 'null'
-        extent:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Extent'
-        id:
-          type: string
-        item_type:
-          type:
-          - string
-          - 'null'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        title:
+            type: array
+            items:
+              type: string
+        trs:
           type:
           - string
           - 'null'
@@ -126,18 +92,52 @@ components:
           type:
           - string
           - 'null'
-    Temporal:
+    CollectionIdResponse:
       type: object
+      required:
+      - id
+      - links
       properties:
-        interval:
+        attribution:
+          type:
+          - string
+          - 'null'
+        crs:
           type:
           - array
           - 'null'
           items:
-            type: array
-            items:
-              type: string
-        trs:
+            type: string
+        description:
           type:
           - string
           - 'null'
+        extent:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Extent'
+        id:
+          type: string
+        item_type:
+          type:
+          - string
+          - 'null'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type:
+          - string
+          - 'null'
+    Extent:
+      type: object
+      properties:
+        spatial:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Spatial'
+        temporal:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Temporal'

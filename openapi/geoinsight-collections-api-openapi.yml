@@ -27,6 +27,64 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    Spatial:
+      type: object
+      properties:
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+        crs:
+          type:
+          - string
+          - 'null'
     CollectionsResponse:
       type: object
       required:
@@ -90,61 +148,3 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/Temporal'
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-    Spatial:
-      type: object
-      properties:
-        bbox:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: number
-              format: double
-        crs:
-          type:
-          - string
-          - 'null'
-    Temporal:
-      type: object
-      properties:
-        interval:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: string
-        trs:
-          type:
-          - string
-          - 'null'
