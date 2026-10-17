@@ -106,6 +106,19 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    LinkTemplate:
+      type: object
+      required:
+      - rel
+      - title
+      - uriTemplate
+      properties:
+        rel:
+          type: string
+        title:
+          type: string
+        uriTemplate:
+          type: string
     ZonesResponse:
       type: object
       required:
@@ -129,46 +142,6 @@ components:
           type: array
           items:
             type: string
-    LinkTemplate:
-      type: object
-      required:
-      - rel
-      - title
-      - uriTemplate
-      properties:
-        rel:
-          type: string
-        title:
-          type: string
-        uriTemplate:
-          type: string
-    ApiError:
-      type: object
-      description: API error response body for JSON error messages.
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
-          type:
-          - string
-          - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
-          type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
     Link:
       type: object
       required:
@@ -193,6 +166,33 @@ components:
           - string
           - 'null'
         type:
+          type:
+          - string
+          - 'null'
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
           type:
           - string
           - 'null'

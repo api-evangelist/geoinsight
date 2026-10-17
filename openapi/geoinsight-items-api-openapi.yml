@@ -205,86 +205,34 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ApiError:
+    RawItemResponse:
       type: object
-      description: API error response body for JSON error messages.
+      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
       required:
-      - code
-      - message
+      - collection
+      - source
+      - numberMatched
+      - feature_id
+      - item
+      - links
       properties:
-        code:
-          type: integer
-          format: int32
-          description: HTTP status code
-          example: 422
-          minimum: 0
-        hint:
-          type:
-          - string
-          - 'null'
-          description: Optional hint to help client fix the request
-          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
-        message:
+        collection:
           type: string
-          description: Fixed message describing the error
-          example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
-    FeatureResponse:
-      type: object
-      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
-
-        row index in glob scan order (the raw parquet carries no guaranteed id
-
-        column) — only stable while the lake prefix doesn''t change.'
-      required:
-      - type
-      - id
-      - geometry
-      - properties
-      properties:
-        geometry:
-          type: object
-        id:
+        feature_id:
           type: integer
           minimum: 0
+        item:
+          type: object
         links:
           type: array
           items:
             $ref: '#/components/schemas/Link'
-        properties:
-          type: object
-        type:
-          type: string
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
+        numberMatched:
+          type: integer
           format: int64
-        rel:
+        source:
           type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
+          description: The `read_parquet` glob the row was read from.
     RawItemsResponse:
       type: object
       description: 'Raw inspection view (`f=json`): rows exactly as they sit in the lake
@@ -337,6 +285,59 @@ components:
         source:
           type: string
           description: The `read_parquet` glob the rows were read from.
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    FeatureResponse:
+      type: object
+      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
+
+        row index in glob scan order (the raw parquet carries no guaranteed id
+
+        column) — only stable while the lake prefix doesn''t change.'
+      required:
+      - type
+      - id
+      - geometry
+      - properties
+      properties:
+        geometry:
+          type: object
+        id:
+          type: integer
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        properties:
+          type: object
+        type:
+          type: string
     FileInfo:
       type: object
       description: One parquet file under the collection's lake data prefix with its row count.
@@ -349,34 +350,33 @@ components:
         rows:
           type: integer
           format: int64
-    RawItemResponse:
+    ApiError:
       type: object
-      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
+      description: API error response body for JSON error messages.
       required:
-      - collection
-      - source
-      - numberMatched
-      - feature_id
-      - item
-      - links
+      - code
+      - message
       properties:
-        collection:
-          type: string
-        feature_id:
+        code:
           type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
           minimum: 0
-        item:
-          type: object
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
-          type: integer
-          format: int64
-        source:
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
           type: string
-          description: The `read_parquet` glob the row was read from.
+          description: Fixed message describing the error
+          example: Validation Failed
+        redirect_location:
+          type:
+          - string
+          - 'null'
     FeatureCollectionResponse:
       type: object
       description: OGC API Features `getFeatures` response over the collection's lake parquet.
