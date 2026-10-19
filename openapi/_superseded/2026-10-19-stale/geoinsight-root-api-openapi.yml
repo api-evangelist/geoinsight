@@ -1,0 +1,20 @@
+openapi: 3.2.0
+info:
+  title: oda Root API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+tags:
+- name: Root
+paths:
+  /:
+    get:
+      tags:
+      - Root
+      operationId: root_handler
+      responses:
+        '200':
+          description: Get root
+      summary: Root handler
+      x-summary-source: derived

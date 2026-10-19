@@ -1,10 +1,10 @@
 openapi: 3.2.0
 info:
-  title: oda Items API
-  description: ''
+  title: GeoInsight OGC API - DGGS Items API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
   license:
     name: ''
-  version: 3.0.0
+  version: 0.1.2
 tags:
 - name: Items
 paths:
@@ -205,34 +205,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    RawItemResponse:
-      type: object
-      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
-      required:
-      - collection
-      - source
-      - numberMatched
-      - feature_id
-      - item
-      - links
-      properties:
-        collection:
-          type: string
-        feature_id:
-          type: integer
-          minimum: 0
-        item:
-          type: object
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        numberMatched:
-          type: integer
-          format: int64
-        source:
-          type: string
-          description: The `read_parquet` glob the row was read from.
     RawItemsResponse:
       type: object
       description: 'Raw inspection view (`f=json`): rows exactly as they sit in the lake
@@ -285,6 +257,60 @@ components:
         source:
           type: string
           description: The `read_parquet` glob the rows were read from.
+    FeatureResponse:
+      type: object
+      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
+
+        row index in glob scan order (the raw parquet carries no guaranteed id
+
+        column) — only stable while the lake prefix doesn''t change.'
+      required:
+      - type
+      - id
+      - geometry
+      - properties
+      properties:
+        geometry:
+          type: object
+        id:
+          type: integer
+          minimum: 0
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        properties:
+          type: object
+        type:
+          type: string
+    RawItemResponse:
+      type: object
+      description: Raw inspection view of a single row (`/items/{feature_id}?f=json`).
+      required:
+      - collection
+      - source
+      - numberMatched
+      - feature_id
+      - item
+      - links
+      properties:
+        collection:
+          type: string
+        feature_id:
+          type: integer
+          minimum: 0
+        item:
+          type: object
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        numberMatched:
+          type: integer
+          format: int64
+        source:
+          type: string
+          description: The `read_parquet` glob the row was read from.
     Link:
       type: object
       required:
@@ -312,44 +338,6 @@ components:
           type:
           - string
           - 'null'
-    FeatureResponse:
-      type: object
-      description: 'A single GeoJSON Feature read from the lake parquet. `id` is the 0-based
-
-        row index in glob scan order (the raw parquet carries no guaranteed id
-
-        column) — only stable while the lake prefix doesn''t change.'
-      required:
-      - type
-      - id
-      - geometry
-      - properties
-      properties:
-        geometry:
-          type: object
-        id:
-          type: integer
-          minimum: 0
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        properties:
-          type: object
-        type:
-          type: string
-    FileInfo:
-      type: object
-      description: One parquet file under the collection's lake data prefix with its row count.
-      required:
-      - file
-      - rows
-      properties:
-        file:
-          type: string
-        rows:
-          type: integer
-          format: int64
     ApiError:
       type: object
       description: API error response body for JSON error messages.
@@ -373,10 +361,6 @@ components:
           type: string
           description: Fixed message describing the error
           example: Validation Failed
-        redirect_location:
-          type:
-          - string
-          - 'null'
     FeatureCollectionResponse:
       type: object
       description: OGC API Features `getFeatures` response over the collection's lake parquet.
@@ -406,3 +390,15 @@ components:
           type: string
         type:
           type: string
+    FileInfo:
+      type: object
+      description: One parquet file under the collection's lake data prefix with its row count.
+      required:
+      - file
+      - rows
+      properties:
+        file:
+          type: string
+        rows:
+          type: integer
+          format: int64

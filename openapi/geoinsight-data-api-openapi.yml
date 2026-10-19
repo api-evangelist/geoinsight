@@ -1,10 +1,10 @@
 openapi: 3.2.0
 info:
-  title: oda Data API
-  description: ''
+  title: GeoInsight OGC API - DGGS Data API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
   license:
     name: ''
-  version: 3.0.0
+  version: 0.1.2
 tags:
 - name: Data
 paths:
@@ -156,71 +156,141 @@ paths:
                 $ref: '#/components/schemas/ApiError'
       summary: Collection id dggrs id zone id data utoipa doc
       x-summary-source: derived
+  /dggs/{dggrs_id}/zones/{zone_id}/data:
+    get:
+      tags:
+      - Data
+      operationId: dggs_id_zone_id_data_utoipa_doc
+      parameters:
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: zone_id
+        in: path
+        description: Zone identifier
+        required: true
+        schema:
+          type: string
+      - name: cog-url
+        in: query
+        description: URL of an arbitrary COG to query directly (required on this collection-less route).
+        required: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: Response format; see the collection-scoped variant for the full parameter list.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Zone data computed from the given COG
+        '400':
+          description: Missing cog-url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      summary: Dggs id zone id data utoipa doc
+      x-summary-source: derived
+    post:
+      tags:
+      - Data
+      operationId: dggs_id_zone_id_data_post_utoipa_doc
+      parameters:
+      - name: dggrs_id
+        in: path
+        description: DGGRS identifier
+        required: true
+        schema:
+          type: string
+      - name: zone_id
+        in: path
+        description: Zone identifier
+        required: true
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: 'Response format. Accepted values: `json`, `dggs+json`, `geo+json`, `html`, `parquet`, `geoparquet`. Defaults to content negotiation via the `Accept` header.'
+        required: false
+        schema:
+          type: string
+      - name: zone-depth
+        in: query
+        description: Relative depth of child zones to aggregate. Accepts a single integer (e.g. `1`) or a comma-separated list (e.g. `1,2`). Defaults to the DGGRS-defined default depth.
+        required: false
+        schema:
+          type: string
+      - name: datetime
+        in: query
+        description: Temporal filter in RFC 3339 format. Accepts an instant (`2024-01-01T00:00:00Z`) or an interval (`2024-01-01/2025-01-01`). Open-ended intervals use `..` (e.g. `2024-01-01/..`).
+        required: false
+        schema:
+          type: string
+      - name: refined-geometry
+        in: query
+        description: 'Densify zone geometry by interpolating additional points along edges. Relevant for geo+json and geoparquet formats. Default: false.'
+        required: false
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CrossCollectionRequest'
+        required: true
+      responses:
+        '200':
+          description: Data from several collections, joined on zone id
+          content:
+            application/vnd.ogc.dggs+json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+            application/geo+json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+            application/vnd.apache.parquet:
+              schema:
+                type: string
+            application/vnd.geo+parquet:
+              schema:
+                type: string
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      summary: Dggs id zone id data post utoipa doc
+      x-summary-source: derived
 components:
   schemas:
-    DataResponse:
-      type: object
-      required:
-      - dggrs
-      - zoneId
-      - depths
-      - links
-      properties:
-        defaultDepth:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        depths:
-          type: array
-          items:
-            type: integer
-            format: int32
-        dggrs:
-          type: string
-        dimensions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Dimension'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
-        schema:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/Schema'
-        zoneId:
-          type: string
-    Link:
-      type: object
-      required:
-      - href
-      - rel
-      properties:
-        href:
-          type: string
-        hreflang:
-          type:
-          - string
-          - 'null'
-        length:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        rel:
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
+    FilterSpec:
+      oneOf:
+      - type: string
+        description: CQL2-Text, e.g. `"length > 500"`.
+      - type: object
+        description: 'CQL2-JSON, e.g. `{"op": ">", "args": [{"property": "length"}, 500]}`.'
+      description: 'A CQL2 filter in either encoding. A JSON object is CQL2-JSON, a string is
+
+        CQL2-Text; the JSON type discriminates, so no `filter-lang` is needed.'
     Grid:
       type: object
       required:
@@ -258,6 +328,94 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/NumStr'
+    CollectionSelectionBody:
+      type: object
+      description: 'One collection''s selection: which fields, optionally filtered and renamed.'
+      required:
+      - id
+      - fields
+      properties:
+        alias:
+          type:
+          - string
+          - 'null'
+          description: 'Overrides the `id` as the output column prefix. Needed to list the same
+
+            collection twice (e.g. under two different filters), which would
+
+            otherwise collide on `id__field`.'
+        fields:
+          type: array
+          items:
+            type: string
+          description: 'Fields to return from this collection''s schema. Required and non-empty:
+
+            there is deliberately no wildcard, so the response column set does not
+
+            silently change when a collection''s schema gains a field.'
+        filter:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/FilterSpec'
+            description: 'A CQL2 predicate restricting which of this collection''s source rows
+
+              contribute to each zone''s value. Only supported for DuckDB-backed
+
+              collections.'
+        id:
+          type: string
+          description: The collection to read from.
+    SchemaType:
+      type: string
+      enum:
+      - object
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    Schema:
+      type: object
+      required:
+      - type
+      - properties
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string
+        required:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        type:
+          $ref: '#/components/schemas/SchemaType'
     Dimension:
       type: object
       required:
@@ -287,40 +445,77 @@ components:
           type:
           - string
           - 'null'
-    PropertyType:
-      type: string
-      enum:
-      - array
-      - boolean
-      - integer
-      - 'null'
-      - number
-      - object
-      - string
-    Schema:
+    SchemaProperty:
       type: object
+      description: A single property in JSON Schema format, per OGC API - Features Part 3 §7.3.
       required:
+      - title
       - type
-      - properties
       properties:
-        properties:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/SchemaProperty'
-          propertyNames:
-            type: string
-        required:
+        description:
+          type:
+          - string
+          - 'null'
+        enum:
           type:
           - array
           - 'null'
           items:
             type: string
+        format:
+          type:
+          - string
+          - 'null'
+        gi_band_index:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        gi_data_type:
+          type:
+          - string
+          - 'null'
+        gi_dggs_stat:
+          type:
+          - string
+          - 'null'
+        gi_gsd:
+          type:
+          - number
+          - 'null'
+          format: double
+        gi_unit:
+          type:
+          - string
+          - 'null'
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maximum:
+          type:
+          - number
+          - 'null'
+          format: double
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minimum:
+          type:
+          - number
+          - 'null'
+          format: double
+        pattern:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
         type:
-          $ref: '#/components/schemas/SchemaType'
-    SchemaType:
-      type: string
-      enum:
-      - object
+          type: string
     ApiError:
       type: object
       description: API error response body for JSON error messages.
@@ -344,10 +539,53 @@ components:
           type: string
           description: Fixed message describing the error
           example: Validation Failed
-        redirect_location:
+    DataResponse:
+      type: object
+      required:
+      - dggrs
+      - zoneId
+      - depths
+      - links
+      properties:
+        defaultDepth:
           type:
-          - string
+          - integer
           - 'null'
+          format: int32
+        depths:
+          type: array
+          items:
+            type: integer
+            format: int32
+        dggrs:
+          type: string
+        dimensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Dimension'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        schema:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Schema'
+        zoneId:
+          type: string
+    CrossCollectionRequest:
+      type: object
+      description: A cross-collection data request.
+      required:
+      - collections
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionSelectionBody'
+          description: One entry per collection to read from. Must not be empty.
     NumStr:
       oneOf:
       - type: object
@@ -364,83 +602,3 @@ components:
         properties:
           String:
             type: string
-    SchemaProperty:
-      type: object
-      properties:
-        contentMediaType:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        enum:
-          type:
-          - array
-          - 'null'
-          items: {}
-        exclusiveMaximum:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        exclusiveMinimum:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        format:
-          type:
-          - string
-          - 'null'
-        maxItems:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        maximum:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        minItems:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        minimum:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          minimum: 0
-        pattern:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/PropertyType'
-        x-ogc-definition:
-          type:
-          - string
-          - 'null'
-        x-ogc-unit:
-          type:
-          - string
-          - 'null'
-        x-ogc-unitLang:
-          type:
-          - string
-          - 'null'

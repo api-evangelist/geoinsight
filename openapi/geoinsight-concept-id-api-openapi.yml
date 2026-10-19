@@ -1,0 +1,171 @@
+openapi: 3.2.0
+info:
+  title: GeoInsight OGC API - DGGS Concept ID API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
+  license:
+    name: ''
+  version: 0.1.2
+tags:
+- name: Concept ID
+paths:
+  /concepts/{concept_id}:
+    get:
+      tags:
+      - Concept ID
+      operationId: concept_id_utoipa_doc
+      parameters:
+      - name: concept_id
+        in: path
+        description: Concept identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get Concept ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConceptIdResponse'
+            text/html:
+              schema:
+                type: string
+      summary: Concept id utoipa doc
+      x-summary-source: derived
+components:
+  schemas:
+    ConceptIdResponse:
+      type: object
+      required:
+      - id
+      - name
+      - ui_label
+      - ui_description
+      - category
+      - processing
+      - collections
+      properties:
+        category:
+          type: string
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConceptCollectionResponse'
+        id:
+          type: integer
+          format: int32
+          minimum: 0
+        name:
+          type: string
+        processing:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConceptProcessingResponse'
+        ui_description:
+          type: string
+        ui_label:
+          type: string
+    ConceptProcessingResponse:
+      type: object
+      required:
+      - derived_indice
+      - dggs_refinement_level
+      properties:
+        color_ramp:
+          type:
+          - string
+          - 'null'
+        derived_indice:
+          type: string
+        dggs_refinement_level:
+          type: integer
+          format: int32
+        notes:
+          type:
+          - string
+          - 'null'
+    SchemaProperty:
+      type: object
+      description: A single property in JSON Schema format, per OGC API - Features Part 3 §7.3.
+      required:
+      - title
+      - type
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+        enum:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        format:
+          type:
+          - string
+          - 'null'
+        gi_band_index:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        gi_data_type:
+          type:
+          - string
+          - 'null'
+        gi_dggs_stat:
+          type:
+          - string
+          - 'null'
+        gi_gsd:
+          type:
+          - number
+          - 'null'
+          format: double
+        gi_unit:
+          type:
+          - string
+          - 'null'
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maximum:
+          type:
+          - number
+          - 'null'
+          format: double
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minimum:
+          type:
+          - number
+          - 'null'
+          format: double
+        pattern:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        type:
+          type: string
+    ConceptCollectionResponse:
+      type: object
+      required:
+      - id
+      - properties
+      properties:
+        id:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string

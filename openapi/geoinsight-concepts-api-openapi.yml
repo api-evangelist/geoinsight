@@ -1,0 +1,51 @@
+openapi: 3.2.0
+info:
+  title: GeoInsight OGC API - DGGS Concepts API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
+  license:
+    name: ''
+  version: 0.1.2
+tags:
+- name: Concepts
+paths:
+  /concepts:
+    get:
+      tags:
+      - Concepts
+      operationId: concepts_utoipa_doc
+      responses:
+        '200':
+          description: List of concepts (taxonomy)
+        '503':
+          description: Datastore not initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      summary: Concepts utoipa doc
+      x-summary-source: derived
+components:
+  schemas:
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed

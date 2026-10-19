@@ -1,10 +1,10 @@
 openapi: 3.2.0
 info:
-  title: oda Collections API
-  description: ''
+  title: GeoInsight OGC API - DGGS Collections API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
   license:
     name: ''
-  version: 3.0.0
+  version: 0.1.2
 tags:
 - name: Collections
 paths:
@@ -25,8 +25,76 @@ paths:
                 type: string
       summary: Utoipa doc
       x-summary-source: derived
+  /collections/{collection_id}/queryables:
+    get:
+      tags:
+      - Collections
+      operationId: queryables_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Queryables of the collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemaResponse'
+        '404':
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      summary: Queryables utoipa doc
+      x-summary-source: derived
+  /collections/{collection_id}/schema:
+    get:
+      tags:
+      - Collections
+      operationId: schema_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Logical schema of the collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemaResponse'
+        '404':
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      summary: Schema utoipa doc
+      x-summary-source: derived
 components:
   schemas:
+    CollectionsResponse:
+      type: object
+      required:
+      - links
+      - collections
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionId'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
     CollectionId:
       type: object
       required:
@@ -65,20 +133,6 @@ components:
           type:
           - string
           - 'null'
-    CollectionsResponse:
-      type: object
-      required:
-      - links
-      - collections
-      properties:
-        collections:
-          type: array
-          items:
-            $ref: '#/components/schemas/CollectionId'
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/Link'
     Spatial:
       type: object
       properties:
@@ -92,21 +146,6 @@ components:
               type: number
               format: double
         crs:
-          type:
-          - string
-          - 'null'
-    Temporal:
-      type: object
-      properties:
-        interval:
-          type:
-          - array
-          - 'null'
-          items:
-            type: array
-            items:
-              type: string
-        trs:
           type:
           - string
           - 'null'
@@ -137,6 +176,115 @@ components:
           type:
           - string
           - 'null'
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
+    SchemaProperty:
+      type: object
+      description: A single property in JSON Schema format, per OGC API - Features Part 3 §7.3.
+      required:
+      - title
+      - type
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+        enum:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        format:
+          type:
+          - string
+          - 'null'
+        gi_band_index:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        gi_data_type:
+          type:
+          - string
+          - 'null'
+        gi_dggs_stat:
+          type:
+          - string
+          - 'null'
+        gi_gsd:
+          type:
+          - number
+          - 'null'
+          format: double
+        gi_unit:
+          type:
+          - string
+          - 'null'
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maximum:
+          type:
+          - number
+          - 'null'
+          format: double
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minimum:
+          type:
+          - number
+          - 'null'
+          format: double
+        pattern:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        type:
+          type: string
+    ApiError:
+      type: object
+      description: API error response body for JSON error messages.
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: HTTP status code
+          example: 422
+          minimum: 0
+        hint:
+          type:
+          - string
+          - 'null'
+          description: Optional hint to help client fix the request
+          example: Parameter `parent-zone-level` is required when `parent-zone` is provided
+        message:
+          type: string
+          description: Fixed message describing the error
+          example: Validation Failed
     Extent:
       type: object
       properties:
@@ -148,3 +296,34 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/Temporal'
+    SchemaResponse:
+      type: object
+      description: OGC JSON Schema response used by both `/schema` and `/queryables`.
+      required:
+      - $schema
+      - $id
+      - type
+      - title
+      - properties
+      - additionalProperties
+      properties:
+        $id:
+          type: string
+        $schema:
+          type: string
+        additionalProperties:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        properties:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SchemaProperty'
+          propertyNames:
+            type: string
+        title:
+          type: string
+        type:
+          type: string

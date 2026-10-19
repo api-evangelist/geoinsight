@@ -1,10 +1,10 @@
 openapi: 3.2.0
 info:
-  title: oda DGGRS ID API
-  description: ''
+  title: GeoInsight OGC API - DGGS DGGRS ID API
+  description: DGGS data retrieval per OGC 21-038r1. Admin endpoints (/admin/*) are localhost-only and intentionally undocumented here.
   license:
     name: ''
-  version: 3.0.0
+  version: 0.1.2
 tags:
 - name: DGGRS ID
 paths:
@@ -88,6 +88,10 @@ components:
           - 'null'
         id:
           type: string
+        linkTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTemplate'
         links:
           type: array
           items:
@@ -105,6 +109,19 @@ components:
         title:
           type: string
         uri:
+          type: string
+    LinkTemplate:
+      type: object
+      required:
+      - rel
+      - title
+      - uriTemplate
+      properties:
+        rel:
+          type: string
+        title:
+          type: string
+        uriTemplate:
           type: string
     Link:
       type: object

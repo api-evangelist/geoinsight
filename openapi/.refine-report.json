@@ -1,15 +1,19 @@
 {
   "provider": "geoinsight",
   "sources": [
-    "_original/geoinsight-ogc-api-dggs-openapi-original.json"
+    "_original/geoinsight-openapi.json"
   ],
   "outputs": [
     "geoinsight-collection-id-api-openapi.yml",
     "geoinsight-collections-api-openapi.yml",
+    "geoinsight-concept-id-api-openapi.yml",
+    "geoinsight-concepts-api-openapi.yml",
+    "geoinsight-conformance-api-openapi.yml",
     "geoinsight-dggrs-id-api-openapi.yml",
     "geoinsight-dggs-api-openapi.yml",
     "geoinsight-data-api-openapi.yml",
     "geoinsight-items-api-openapi.yml",
+    "geoinsight-orders-api-openapi.yml",
     "geoinsight-zone-id-api-openapi.yml",
     "geoinsight-zones-api-openapi.yml",
     "geoinsight-root-api-openapi.yml"
@@ -18,30 +22,22 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "1 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "geoinsight-ogc-api-dggs-openapi-original.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Collection ID",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Collections",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: DGGRS ID",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: DGGS",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Data",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Items",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Zone ID",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: Zones",
-    "geoinsight-ogc-api-dggs-openapi-original.json: declared missing tag: root",
-    "apis.yml register: already-registered"
+    "geoinsight-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "geoinsight-openapi.json: declared missing tag: Collection ID",
+    "geoinsight-openapi.json: declared missing tag: Collections",
+    "geoinsight-openapi.json: declared missing tag: Concept ID",
+    "geoinsight-openapi.json: declared missing tag: Concepts",
+    "geoinsight-openapi.json: declared missing tag: Conformance",
+    "geoinsight-openapi.json: declared missing tag: DGGRS ID",
+    "geoinsight-openapi.json: declared missing tag: DGGS",
+    "geoinsight-openapi.json: declared missing tag: Data",
+    "geoinsight-openapi.json: declared missing tag: Items",
+    "geoinsight-openapi.json: declared missing tag: Orders",
+    "geoinsight-openapi.json: declared missing tag: Zone ID",
+    "geoinsight-openapi.json: declared missing tag: Zones",
+    "geoinsight-openapi.json: declared missing tag: root",
+    "apis.yml register: written (+4 apis, 13 total)"
   ],
-  "skipped": [
-    "_original/geoinsight-ogc-api-dggs-openapi.yml: archived document superseded by a larger archived document",
-    "geoinsight-collection-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-collections-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-dggrs-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-dggs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-root-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-zone-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "geoinsight-zones-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

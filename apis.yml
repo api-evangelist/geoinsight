@@ -302,6 +302,46 @@ apis:
     url: errors/geoinsight-problem-types.yml
   - type: ToolCrosswalk
     url: mcp/geoinsight-tool-crosswalk.yml
+- aid: geoinsight:geoinsight-concept-id-api
+  name: GeoInsight Concept ID API
+  description: The Concept ID API from GeoInsight — 1 operation(s) for concept id.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Concept ID
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-concept-id-api-openapi.yml
+- aid: geoinsight:geoinsight-concepts-api
+  name: GeoInsight Concepts API
+  description: The Concepts API from GeoInsight — 1 operation(s) for concepts.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Concepts
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-concepts-api-openapi.yml
+- aid: geoinsight:geoinsight-conformance-api
+  name: GeoInsight Conformance API
+  description: The Conformance API from GeoInsight — 1 operation(s) for conformance.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Conformance
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-conformance-api-openapi.yml
+- aid: geoinsight:geoinsight-orders-api
+  name: GeoInsight Orders API
+  description: The Orders API from GeoInsight — 4 operation(s) for orders.
+  humanURL: https://api.geoinsight.ai/api?f=html
+  baseURL: https://api.geoinsight.ai
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/geoinsight-orders-api-openapi.yml
 common:
 - type: AgenticAccess
   url: agentic-access/geoinsight-agentic-access.yml

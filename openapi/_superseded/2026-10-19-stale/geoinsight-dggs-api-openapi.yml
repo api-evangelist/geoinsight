@@ -1,0 +1,112 @@
+openapi: 3.2.0
+info:
+  title: oda DGGS API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+tags:
+- name: DGGS
+paths:
+  /collections/{collection_id}/dggs:
+    get:
+      tags:
+      - DGGS
+      operationId: collection_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get collection_id DGGS's
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DggsResponse'
+            text/html:
+              schema:
+                type: string
+      summary: Collection id utoipa doc
+      x-summary-source: derived
+  /dggs:
+    get:
+      tags:
+      - DGGS
+      operationId: utoipa_doc
+      responses:
+        '200':
+          description: Get DGGS's
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DggsResponse'
+            text/html:
+              schema:
+                type: string
+      summary: Utoipa doc
+      x-summary-source: derived
+components:
+  schemas:
+    DggrsId:
+      type: object
+      required:
+      - id
+      - title
+      - uri
+      - links
+      properties:
+        id:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type: string
+        uri:
+          type: string
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    DggsResponse:
+      type: object
+      required:
+      - links
+      - dggrs
+      properties:
+        dggrs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DggrsId'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'

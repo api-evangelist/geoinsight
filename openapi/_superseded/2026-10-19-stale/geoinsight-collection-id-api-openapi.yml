@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: oda Collection ID API
+  description: ''
+  license:
+    name: ''
+  version: 3.0.0
+tags:
+- name: Collection ID
+paths:
+  /collections/{collection_id}:
+    get:
+      tags:
+      - Collection ID
+      operationId: collection_id_utoipa_doc
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Get Collection ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionIdResponse'
+            text/html:
+              schema:
+                type: string
+      summary: Collection id utoipa doc
+      x-summary-source: derived
+components:
+  schemas:
+    CollectionIdResponse:
+      type: object
+      required:
+      - id
+      - links
+      properties:
+        attribution:
+          type:
+          - string
+          - 'null'
+        crs:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        description:
+          type:
+          - string
+          - 'null'
+        extent:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Extent'
+        id:
+          type: string
+        item_type:
+          type:
+          - string
+          - 'null'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        title:
+          type:
+          - string
+          - 'null'
+    Spatial:
+      type: object
+      properties:
+        bbox:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: number
+              format: double
+        crs:
+          type:
+          - string
+          - 'null'
+    Temporal:
+      type: object
+      properties:
+        interval:
+          type:
+          - array
+          - 'null'
+          items:
+            type: array
+            items:
+              type: string
+        trs:
+          type:
+          - string
+          - 'null'
+    Link:
+      type: object
+      required:
+      - href
+      - rel
+      properties:
+        href:
+          type: string
+        hreflang:
+          type:
+          - string
+          - 'null'
+        length:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        rel:
+          type: string
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+    Extent:
+      type: object
+      properties:
+        spatial:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Spatial'
+        temporal:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/Temporal'
