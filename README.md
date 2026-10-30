@@ -1,4 +1,4 @@
-# geoinsight
+# GeoInsight
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,4 +64,126 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-GeoInsight is a German geospatial-AI company offering a Data-as-a-Service platform built on a Discrete Global Grid System (DGGS). It converts Earth-observation data into AI-ready hierarchical hexagonal 'Spatial Tokens' exposed via a standards-compliant OGC API - DGGS REST endpoint, starting with Sen
+GeoInsight GmbH is a German geospatial-AI company running a Data-as-a-Service platform built on a Discrete Global Grid System (DGGS). It converts Earth-observation and vector data into AI-ready hierarchical hexagonal "Spatial Tokens" so that models can reason about geography the way language models reason about text. The platform is exposed through a standards-compliant OGC API - DGGS endpoint that answers zone-based queries across multiple DGGRS (H3, ISEA3H, IGEO7, IVEA3H), serving Sentinel-2 and Landsat imagery from the Copernicus and USGS archives, RADARSAT Constellation backscatter, Overture administrative boundaries, AIS vessel positions, building footprints and elevation models. Queries return GeoJSON, DGGS-JSON, GeoParquet or HTML, with CQL2 filtering, COG raster statistics and STAC search strategies. Target markets are OSINT and maritime intelligence, climate and environment, agriculture and food security, infrastructure and urban planning, disaster response, and finance and risk. The company is an NVIDIA Inception member and participates in the OGC AI-DGGS pilot programme.
+
+**Areas:** Geospatial · DGGS · Discrete Global Grid System · Earth Observation · Remote Sensing · Spatial Data · GIS · Artificial Intelligence · Machine Learning · Analysis-ready data · Spatial Tokens · Sentinel-2
+
+## GeoInsight on APIs.io
+
+Everything profiled for GeoInsight is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/geoinsight/](https://apis.io/providers/geoinsight/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [GeoInsight Collection ID API](https://apis.io/apis/geoinsight/geoinsight-collection-id-api/) — The Collection ID API from GeoInsight — 1 operation(s) for collection id.
+- [GeoInsight Collections API](https://apis.io/apis/geoinsight/geoinsight-collections-api/) — The Collections API from GeoInsight — 1 operation(s) for collections.
+- [GeoInsight Data API](https://apis.io/apis/geoinsight/geoinsight-data-api/) — The Data API from GeoInsight — 1 operation(s) for data.
+- [GeoInsight DGGRS ID API](https://apis.io/apis/geoinsight/geoinsight-dggrs-id-api/) — The DGGRS ID API from GeoInsight — 2 operation(s) for dggrs id.
+- [GeoInsight DGGS API](https://apis.io/apis/geoinsight/geoinsight-dggs-api/) — The DGGS API from GeoInsight — 2 operation(s) for dggs.
+- [GeoInsight Items API](https://apis.io/apis/geoinsight/geoinsight-items-api/) — The Items API from GeoInsight — 2 operation(s) for items.
+- [GeoInsight Root API](https://apis.io/apis/geoinsight/geoinsight-root-api/) — The root API from GeoInsight — 1 operation(s) for root.
+- [GeoInsight Zone ID API](https://apis.io/apis/geoinsight/geoinsight-zone-id-api/) — The Zone ID API from GeoInsight — 2 operation(s) for zone id.
+- [GeoInsight Zones API](https://apis.io/apis/geoinsight/geoinsight-zones-api/) — The Zones API from GeoInsight — 2 operation(s) for zones.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [GeoInsight MCP (candidate)](https://apis.io/servers/geoinsight/geoinsight-mcp-candidate/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Geoinsight Agentic Access](https://apis.io/agentic-access/geoinsight/geoinsight-agentic-access/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Geoinsight Ogc Api Dggs Overlay](https://apis.io/overlays/geoinsight/geoinsight-ogc-api-dggs-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Geoinsight Authentication](https://apis.io/security/geoinsight/geoinsight-authentication/)
+- [Geoinsight Domain Security](https://apis.io/security/geoinsight/geoinsight-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Geoinsight Plans Pricing](https://apis.io/plans/geoinsight/geoinsight-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Geoinsight Rate Limits](https://apis.io/rate-limits/geoinsight/geoinsight-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://geoinsight.ai/)
+- [Documentation](https://api.geoinsight.ai/api?f=html)
+- [API reference](https://api.geoinsight.ai/api?f=html)
+- [Terms of service](https://geoinsight.ai/terms)
+- [Privacy policy](https://geoinsight.ai/privacy)
+
+## API Evangelist rating
+
+**Kin Score 33.6** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 38.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 58.9 |
+| Access clarity | 21.1 |
+
+**Agent readiness 30.6** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | na |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | na |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 19.2** — Energy & Utilities
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/geoinsight/](https://apis.io/providers/geoinsight/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for GeoInsight: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/geoinsight/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
